@@ -12,6 +12,7 @@ public class RayVisualizer : MonoBehaviour
     [Header("Reticle Point")]
     [SerializeField] private GameObject ReticlePoint;     // 히트시 그릴 포인트
     [SerializeField] private bool ShowReticle = true;
+    [SerializeField] private float baseScale = 0.05f;     // 크로스헤어의 기준 스케일 (원하는 크기)
 
     private void Awake()
     {
@@ -35,6 +36,7 @@ public class RayVisualizer : MonoBehaviour
     작성자: 박원정
     함수: Process
     기능: 오른손에서 시작하는 레이를 그림
+    작성일자: 2025-06-30
     *********************************************************************************************/
     private IEnumerator Process()
     {
@@ -49,6 +51,12 @@ public class RayVisualizer : MonoBehaviour
                 ReticlePoint.transform.position = HitInfo.point;
                 ReticlePoint.SetActive(ShowReticle);                    // 닿은 지점에 크로스헤어를 그림
                 ReticlePoint.transform.LookAt(Camera.main.transform);   // ReticlePoint == 크로스헤어가 항상 카메라를 바라보도록 함
+
+                // 크로스헤어 크기 보정
+                float distanceToCamera = Vector3.Distance(Camera.main.transform.position, HitInfo.point);
+               
+
+                ReticlePoint.transform.localScale = Vector3.one * (baseScale * distanceToCamera);
             }
             else
             {
