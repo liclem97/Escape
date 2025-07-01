@@ -22,13 +22,13 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log($"방 입장 성공: {PhotonNetwork.CurrentRoom.Name}");
 
-        joinedRoomEvent.Invoke();
+        joinedRoomEvent?.Invoke();
     }
 
     void TryJoinOrCreateRoom()
     {
         var roomName = "myRoom";
-        var options = new RoomOptions { MaxPlayers = 4 };
+        var options = new RoomOptions { MaxPlayers = 2 };
         PhotonNetwork.JoinOrCreateRoom(roomName, options, TypedLobby.Default);
     }
 }
