@@ -51,7 +51,9 @@ public class CameraMove : MonoBehaviour
 
     private void Update()
     {
-        if (player1 != null && player2 != null)
+        if (player1 == null && player2 == null) return;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             StartCoroutine(MoveToPosition(player1, movePointsPlayer1[index1]));
             StartCoroutine(MoveToPosition(player2, movePointsPlayer2[index2]));
