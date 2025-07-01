@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ public struct MoveStruct
     public float moveTime;
 }
 
-public class CameraMove : MonoBehaviour
+public class CameraMove : MonoBehaviourPun
 {
     public static CameraMove Instance { get; private set; }
     public enum PlayerType { Player1, Player2 }
@@ -51,16 +52,28 @@ public class CameraMove : MonoBehaviour
 
     private void Update()
     {
+        // 마스터 클라이언트만 키 입력 받음
+        if (!PhotonNetwork.IsMasterClient) return;
+
         if (player1 == null && player2 == null) return;
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            StartCoroutine(MoveToPosition(player1, movePointsPlayer1[index1]));
-            StartCoroutine(MoveToPosition(player2, movePointsPlayer2[index2]));
-
-            index1 = (index1 + 1) % movePointsPlayer1.Length;
-            index2 = (index2 + 1) % movePointsPlayer2.Length;
+            // 모든 클라이언트에게 MovePlayers RPC 호출
+            photonView.RPC(nameof(RPC_MovePlayers), RpcTarget.AllBuffered);
         }
+    }
+
+    [PunRPC]
+    private void RPC_MovePlayers()
+    {
+        if (player1 == null || player2 == null) return;
+
+        StartCoroutine(MoveToPosition(player1, movePointsPlayer1[index1]));
+        StartCoroutine(MoveToPosition(player2, movePointsPlayer2[index2]));
+
+        index1 = (index1 + 1) % movePointsPlayer1.Length;
+        index2 = (index2 + 1) % movePointsPlayer2.Length;
     }
 
     private IEnumerator MoveToPosition(GameObject player, MoveStruct targetStruct)
