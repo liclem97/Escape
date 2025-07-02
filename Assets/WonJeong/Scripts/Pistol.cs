@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 public class Pistol : Gun
@@ -11,20 +12,23 @@ public class Pistol : Gun
 
     protected override void Fire()
     {
-        base.Fire();
-
         Ray ray = new Ray(rayVisualizer.transform.position, rayVisualizer.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, attackRange))
         {
-            // 데미지 처리
             if (hit.collider.TryGetComponent(out IDamageable damageable))
             {
                 damageable.TakeDamage(gunDamage);
             }
 
-            // 이펙트 및 사운드
-            SpawnBulletFX(hit);
-            PlayGunFireSound();            
+            photonView.RPC(nameof(RPC_SpawnBulletFX), RpcTarget.All, hit.point, hit.normal, hit.collider.gameObject.layer);
+            PlayGunFireSound();
+            ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
         }
+    }
+
+    [PunRPC]
+    private void RPC_SpawnBulletFX(Vector3 position, Vector3 normal, int hitLayer)
+    {
+        SpawnBulletFX(position, normal, hitLayer);
     }
 }

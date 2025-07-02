@@ -441,7 +441,7 @@ GameObject:
   - component: {fileID: 790360507}
   - component: {fileID: 790360506}
   - component: {fileID: 790360505}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -626,8 +626,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 918269608}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07959302, y: 0.702613, z: -0.079605386, w: 0.70261157}
-  m_LocalPosition: {x: -1.6827803, y: -0.79755485, z: -0.13458824}
+  m_LocalRotation: {x: -0.13470711, y: 0.052585784, z: -0.007159454, w: -0.98946327}
+  m_LocalPosition: {x: 26.154104, y: 0.5, z: -4.2677555}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -645,7 +645,7 @@ GameObject:
   - component: {fileID: 1125778145}
   - component: {fileID: 1125778144}
   - component: {fileID: 1125778143}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -752,7 +752,7 @@ GameObject:
   - component: {fileID: 1184843588}
   - component: {fileID: 1184843587}
   - component: {fileID: 1184843586}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1228,7 +1228,7 @@ Transform:
   m_GameObject: {fileID: 1768687626}
   serializedVersion: 2
   m_LocalRotation: {x: -0.000008792472, y: 0.9990406, z: -0.043793757, w: -0.00000038542515}
-  m_LocalPosition: {x: 25.848923, y: -0.79755485, z: 0.084228516}
+  m_LocalPosition: {x: 25.848923, y: 0.5, z: 0.084228516}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1281,7 +1281,7 @@ GameObject:
   - component: {fileID: 1938928419}
   - component: {fileID: 1938928418}
   - component: {fileID: 1938928417}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}

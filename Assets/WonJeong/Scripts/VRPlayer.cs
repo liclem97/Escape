@@ -16,8 +16,12 @@ public class VRPlayer : MonoBehaviourPun
 
         if (!photonView.IsMine)
         {
-            if (rig != null)
-                rig.gameObject.SetActive(false);
+            if (rig != null && rig.centerEyeAnchor != null)
+            {
+                // 내 것이 아닌 플레이어는 centerEyeAnchor 전체를 비활성화
+                rig.centerEyeAnchor.gameObject.SetActive(false);
+            }
+
             return;
         }
 
@@ -28,16 +32,30 @@ public class VRPlayer : MonoBehaviourPun
             hmd = rig.centerEyeAnchor;
         }
 
-        // 내 플레이어일 때만 총 생성
+        // 총은 네트워크로 스폰
         if (photonView.IsMine && rightHand != null && gunPrefab != null)
         {
-            GameObject gunInstance = Instantiate(gunPrefab, rightHand); // 부모로 붙이기
-            gunInstance.transform.localPosition = Vector3.zero;
-            gunInstance.transform.localRotation = Quaternion.identity;
+            GameObject gun = PhotonNetwork.Instantiate("Pistol", rightHand.position, rightHand.rotation);
+            photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, gun.GetComponent<PhotonView>().ViewID);
         }
-        else
+    }
+
+    [PunRPC]
+    private void AttachGunToHand(int gunViewID)
+    {
+        PhotonView gunView = PhotonView.Find(gunViewID);
+        if (gunView != null)
         {
-            Debug.LogWarning("총 생성 실패: rightHand 또는 gunPrefab이 null입니다.");
+            Transform hand = GetComponentInChildren<OVRCameraRig>()?.rightHandAnchor;
+            if (hand != null)
+            {
+                // 부모 설정 대신 위치/회전만 따라가도록 설정
+                Gun gunScript = gunView.GetComponent<Gun>();
+                if (gunScript != null)
+                {
+                    gunScript.SetTargetHand(hand);
+                }
+            }
         }
     }
 

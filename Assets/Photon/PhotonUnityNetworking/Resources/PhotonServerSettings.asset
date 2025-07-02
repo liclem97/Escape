@@ -45,6 +45,8 @@ MonoBehaviour:
   - RPC_PlayerRestoreHealth
   - RPC_PlayerTakeDamage
   - RPC_SetSharedHealthPercent
+  - AttachGunToHand
+  - RPC_SpawnBulletFX
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

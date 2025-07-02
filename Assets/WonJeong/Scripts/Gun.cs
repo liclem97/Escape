@@ -1,6 +1,7 @@
+using Photon.Pun;
 using UnityEngine;
 
-public class Gun : MonoBehaviour
+public class Gun : MonoBehaviourPun
 {
     protected enum GunType { Pistol, Revolver, SniperRifle }
     protected enum GunState { Idle, Fire, Reloading }
@@ -20,6 +21,7 @@ public class Gun : MonoBehaviour
     [SerializeField] protected AudioClip gunFireSound;
 
     private AudioSource gunAudioSource;
+    private Transform targetHand;
 
     protected GunType gunType = GunType.Pistol;
     protected GunState gunState = GunState.Idle;
@@ -34,15 +36,23 @@ public class Gun : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (ARAVRInput.GetDown(ARAVRInput.Button.IndexTrigger, ARAVRInput.Controller.RTouch))
+        if (!photonView.IsMine) return;
+        if (targetHand != null)
         {
+            transform.position = targetHand.position;
+            transform.rotation = targetHand.rotation;
+        }
+
+        if (ARAVRInput.GetDown(ARAVRInput.Button.IndexTrigger, ARAVRInput.Controller.RTouch))
+        {            
             TryFire();
         }
+
     }
 
     protected void GunInitialize()
     {
-        if (rayVisualizer != null)
+        if (photonView.IsMine && rayVisualizer != null)
             rayVisualizer.On();
 
         if (gunType != GunType.Pistol)
@@ -52,6 +62,11 @@ public class Gun : MonoBehaviour
         gunAudioSource = GetComponent<AudioSource>();
         if (gunAudioSource == null)
             gunAudioSource = gameObject.AddComponent<AudioSource>();
+    }
+
+    public void SetTargetHand(Transform hand)
+    {
+        targetHand = hand;
     }
 
     protected virtual void TryFire()
@@ -74,29 +89,27 @@ public class Gun : MonoBehaviour
 
     protected virtual void Fire()
     {
-        ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
+       
     }
 
-    protected void SpawnBulletFX(RaycastHit hit)
+    protected void SpawnBulletFX(Vector3 position, Vector3 normal, int hitLayer)
     {
-        int hitLayer = hit.collider.gameObject.layer;
         GameObject effect = null;
 
         if (hitLayer == LayerMask.NameToLayer("Zombie") || hitLayer == LayerMask.NameToLayer("Human"))
-        {
             effect = livingHitEffect;
-        }
         else if (hitLayer == LayerMask.NameToLayer("Environment"))
-        {
             effect = environmentHitEffect;
-        }
 
         if (effect != null)
         {
-            Instantiate(effect, hit.point, Quaternion.LookRotation(hit.normal));
+            GameObject instance = Instantiate(effect, position, Quaternion.LookRotation(normal));
+            var ps = instance.GetComponentInChildren<ParticleSystem>();
+            if (ps != null) ps.Play();
+            Destroy(instance, 2f);
         }
 
-        Debug.DrawRay(rayVisualizer.transform.position, rayVisualizer.transform.forward * 100f, Color.red, 1f);
+        Debug.DrawRay(position, normal * -0.3f, Color.red, 1f);
     }
 
     protected void PlayGunFireSound()
