@@ -47,6 +47,10 @@ MonoBehaviour:
   - RPC_SetSharedHealthPercent
   - AttachGunToHand
   - RPC_SpawnBulletFX
+  - RPC_AttachTo
+  - RPC_AttachToLeftHand
+  - RPC_DetachFromHand
+  - RPC_FlyTo
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

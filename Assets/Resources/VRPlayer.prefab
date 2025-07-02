@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunPrefab: {fileID: 3179007316253746846, guid: 4583b8f883ec10e4991695c3b01bc31d, type: 3}
+  itemGrabDistance: 0.4
 --- !u!114 &803809912899137726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,7 +342,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.5, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7690458219728601417}

@@ -6,9 +6,14 @@ public class VRPlayer : MonoBehaviourPun
     [Header("Gun Prefab")]
     [SerializeField] private GameObject gunPrefab;
 
+    [Header("Item")]
+    [SerializeField] private float itemGrabDistance;
+
     private Transform rightHand;
     private Transform leftHand;
     private Transform hmd;
+
+    private Item heldItem = null;
 
     private void Start()
     {
@@ -40,6 +45,22 @@ public class VRPlayer : MonoBehaviourPun
         }
     }
 
+    private void Update()
+    {
+        if (!photonView.IsMine) return;
+
+        // 왼손 핸드트리거를 눌렀을 때
+        if (ARAVRInput.GetDown(ARAVRInput.Button.HandTrigger, ARAVRInput.Controller.LTouch))
+        {
+            TryPickupItem();
+        }
+
+        if (ARAVRInput.GetUp(ARAVRInput.Button.HandTrigger, ARAVRInput.Controller.LTouch))
+        {
+            TryDropItem();
+        }
+    }
+
     [PunRPC]
     private void AttachGunToHand(int gunViewID)
     {
@@ -57,6 +78,31 @@ public class VRPlayer : MonoBehaviourPun
                 }
             }
         }
+    }
+
+    private void TryPickupItem()
+    {
+        if (heldItem != null) return; // 이미 잡고 있음
+
+        Collider[] colliders = Physics.OverlapSphere(leftHand.position, itemGrabDistance);
+        foreach (var col in colliders)
+        {
+            Item item = col.GetComponent<Item>();
+            if (item != null)
+            {
+                heldItem = item;
+                item.AttachToLeftHand(photonView.ViewID); // 내 ViewID만 넘김
+                break; // 첫 번째 아이템만 집음
+            }
+        }
+    }
+
+    private void TryDropItem()
+    {
+        if (heldItem == null) return;
+
+        heldItem.DetachFromHand(); // 직접 부모 해제
+        heldItem = null;
     }
 
     private void OnDrawGizmos()
@@ -81,7 +127,7 @@ public class VRPlayer : MonoBehaviourPun
         if (leftHand != null)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(leftHand.position, 0.05f);
+            Gizmos.DrawSphere(leftHand.position, itemGrabDistance);
         }
 
         if (hmd != null)
