@@ -49,6 +49,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    private void Start()
+    {
+        Debug.Log($"VRPlayer Start() - IsMine: {photonView.IsMine}");
+    }
+
     private void Update()
     {
         if (!isGameOver && player1Health != null && player1Health.currentHealth <= 0f)
