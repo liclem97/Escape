@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 7690458219728601417}
   - component: {fileID: 5526646643499513741}
   - component: {fileID: 7277827339842010823}
-  - component: {fileID: 5964606642643133705}
   - component: {fileID: 2051888219909452453}
   - component: {fileID: 8116800372216410318}
+  - component: {fileID: 5964606642643133705}
+  - component: {fileID: 803809912899137726}
   m_Layer: 6
   m_Name: VRPlayer
   m_TagString: Player
@@ -89,19 +90,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &5964606642643133705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2325197713203235775}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c390219ba01efb84cad053860f57e2eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gunPrefab: {fileID: 3179007316253746846, guid: 4583b8f883ec10e4991695c3b01bc31d, type: 3}
 --- !u!114 &2051888219909452453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,6 +129,34 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &5964606642643133705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2325197713203235775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c390219ba01efb84cad053860f57e2eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunPrefab: {fileID: 3179007316253746846, guid: 4583b8f883ec10e4991695c3b01bc31d, type: 3}
+--- !u!114 &803809912899137726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2325197713203235775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71629154b57233945a53a4553b2f5c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 0
+  isInvincible: 0
 --- !u!1 &2367897046560599655
 GameObject:
   m_ObjectHideFlags: 0

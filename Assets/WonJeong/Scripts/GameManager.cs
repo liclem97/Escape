@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager Instance { get; private set; }
+    public static VRPlayerHealth player1Health; // 플레이어1의 체력 참조
 
     [Header("Spawn Points")]
     [SerializeField] private Transform player1SpawnPoint;
@@ -18,6 +19,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject player1;
     [SerializeField] private GameObject player2;
 
+    private bool isGameOver = false;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -28,7 +31,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         Instance = this;
 
-        // PhotonView 컴포넌트가 필수입니다
+        // PhotonView 컴포넌트가 필수
         if (photonView == null)
         {
             Debug.LogError("[GameManager] PhotonView 컴포넌트가 없습니다.");
@@ -45,11 +48,23 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    private void Update()
+    {
+        if (!isGameOver && player1Health != null && player1Health.currentHealth <= 0f)
+        {
+            isGameOver = true;
+            OnGameOver();
+        }
+    }
+
+    private void OnGameOver()
+    {
+        Debug.Log("[GameManager] 게임 오버!");
+        // TODO: 씬 전환, UI 출력 등 추가
+    }
+
     public void OnPlayerJoinedRoom()
     {
-        Debug.Log($"[GM] player1SpawnPoint is null? {player1SpawnPoint == null}");
-        Debug.Log($"[GM] player2SpawnPoint is null? {player2SpawnPoint == null}");
-
         string prefabName = "VRPlayer";
 
         Transform spawn = PhotonNetwork.CurrentRoom.PlayerCount == 1
@@ -106,5 +121,23 @@ public class GameManager : MonoBehaviourPunCallbacks
         string p1Name = player1 != null ? player1.name : "null";
         string p2Name = player2 != null ? player2.name : "null";
         Debug.Log($"[GameManager] Assigned Player1: {p1Name}, Player2: {p2Name}");
+
+        if (player1 != null)
+        {
+            player1Health = player1.GetComponent<VRPlayerHealth>();
+            if (player1Health != null)
+            {
+                player1Health.photonView.RPC(nameof(VRPlayerHealth.SetInvincible), RpcTarget.AllBuffered, false); // Player1 무적 해제
+            }
+        }
+
+        if (player2 != null)
+        {
+            VRPlayerHealth p2Health = player2.GetComponent<VRPlayerHealth>();
+            if (p2Health != null)
+            {
+                p2Health.photonView.RPC(nameof(VRPlayerHealth.SetInvincible), RpcTarget.AllBuffered, true); // Player2 무적 설정
+            }
+        }
     }
 }

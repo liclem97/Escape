@@ -52,9 +52,7 @@ public class CameraMove : MonoBehaviourPun
 
     private void Update()
     {
-        // 마스터 클라이언트만 키 입력 받음
-        if (!PhotonNetwork.IsMasterClient) return;
-
+        // 1P, 2P가 모두 있어야 동작함
         if (player1 == null && player2 == null) return;
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
