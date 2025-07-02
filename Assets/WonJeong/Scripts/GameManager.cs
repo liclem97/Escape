@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager Instance { get; private set; }
     public static VRPlayerHealth player1Health; // 플레이어1의 체력 참조
+    public static float sharedHealthPercent = 1f;
 
     [Header("Spawn Points")]
     [SerializeField] private Transform player1SpawnPoint;
@@ -77,7 +78,11 @@ public class GameManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        PhotonNetwork.Instantiate(prefabName, spawn.position, spawn.rotation);
+        // 플레이어 생성
+        GameObject player = PhotonNetwork.Instantiate(prefabName, spawn.position, spawn.rotation);
+       
+        // 닉네임으로 이름 설정 (로컬에서만 적용됨)   
+        player.name = PhotonNetwork.NickName;
 
         // 모든 클라이언트에 플레이어 재할당 명령 전달
         photonView.RPC(nameof(RPC_AssignPlayers), RpcTarget.AllBuffered);
@@ -139,5 +144,12 @@ public class GameManager : MonoBehaviourPunCallbacks
                 p2Health.photonView.RPC(nameof(VRPlayerHealth.SetInvincible), RpcTarget.AllBuffered, true); // Player2 무적 설정
             }
         }
+    }
+
+    [PunRPC]
+    public void RPC_SetSharedHealthPercent(float value)
+    {
+        sharedHealthPercent = value;
+        Debug.Log($"[GameManager] sharedHealthPercent 갱신됨: {value}");
     }
 }

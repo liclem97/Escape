@@ -14,12 +14,37 @@ public class VRPlayerHealth : MonoBehaviourPun, IDamageable
     {
         currentHealth = maxHealth;
     }
+    private void Start()
+    {
+
+    }
 
     public void TakeDamage(float amount)
     {
-        if (isInvincible) return; // 플레이어가 무적, 즉 플레이어2면 return
+        if (isInvincible) return;
 
         currentHealth = Mathf.Clamp(currentHealth - amount, 0f, maxHealth);
+
+        if (photonView.IsMine)
+        {
+            float percent = HealthPercent;
+            PhotonView gameManagerView = GameManager.Instance.GetComponent<PhotonView>();
+            gameManagerView.RPC("RPC_SetSharedHealthPercent", RpcTarget.AllBuffered, percent);
+        }
+    }
+
+    public void RestoreHealth(float amount)
+    {
+        if (isInvincible) return;
+
+        currentHealth = Mathf.Clamp(currentHealth + amount, 0f, maxHealth);
+
+        if (photonView.IsMine)
+        {
+            float percent = HealthPercent;
+            PhotonView gameManagerView = GameManager.Instance.GetComponent<PhotonView>();
+            gameManagerView.RPC("RPC_SetSharedHealthPercent", RpcTarget.AllBuffered, percent);
+        }
     }
 
     [PunRPC]

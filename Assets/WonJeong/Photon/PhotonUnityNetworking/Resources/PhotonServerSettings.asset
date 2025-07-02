@@ -42,6 +42,8 @@ MonoBehaviour:
   - RPC_AssignPlayers
   - RPC_MovePlayers
   - SetInvincible
+  - RPC_PlayerRestoreHealth
+  - RPC_PlayerTakeDamage
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

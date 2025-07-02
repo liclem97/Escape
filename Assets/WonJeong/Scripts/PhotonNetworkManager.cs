@@ -8,7 +8,6 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     [SerializeField] UnityEvent joinedRoomEvent;
     private void Start()
     {
-        PhotonNetwork.NickName = "Player" + Random.Range(1, 9999);
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -21,6 +20,16 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log($"방 입장 성공: {PhotonNetwork.CurrentRoom.Name}");
+
+        // 마스터 클라이언트는 Player1, 그 외는 Player2로 닉네임 설정
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.NickName = "Player1 (Master)";
+        }
+        else
+        {
+            PhotonNetwork.NickName = "Player2";
+        }
 
         joinedRoomEvent?.Invoke();
     }
