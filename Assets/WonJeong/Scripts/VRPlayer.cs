@@ -90,7 +90,7 @@ public class VRPlayer : MonoBehaviourPun
             Item item = col.GetComponent<Item>();
             if (item != null)
             {
-                heldItem = item;
+                heldItem = item;               
                 item.AttachToLeftHand(photonView.ViewID); // 내 ViewID만 넘김
                 break; // 첫 번째 아이템만 집음
             }

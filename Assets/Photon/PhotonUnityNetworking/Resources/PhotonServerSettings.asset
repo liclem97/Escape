@@ -51,6 +51,9 @@ MonoBehaviour:
   - RPC_AttachToLeftHand
   - RPC_DetachFromHand
   - RPC_FlyTo
+  - UseItem
+  - RPC_SetItemSpawner
+  - RPC_ChangeState
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

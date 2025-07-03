@@ -9,6 +9,7 @@ public class VRPlayerHealth : MonoBehaviourPun, IDamageable
     [SerializeField] bool isInvincible = false; // 플레이어 무적 판별 여부
 
     public float HealthPercent => currentHealth / maxHealth;
+    public float MaxHealth => maxHealth;
 
     private void Awake()
     {

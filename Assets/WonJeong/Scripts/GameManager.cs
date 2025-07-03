@@ -20,7 +20,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject player1;
     [SerializeField] private GameObject player2;
 
-    private bool isGameOver = false;
+    private bool isGameOver = false;    
+    public bool IsGameOver
+    {
+        get => isGameOver;
+    }
 
     private void Awake()
     {
@@ -60,6 +64,20 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             isGameOver = true;
             OnGameOver();
+        }
+    }
+
+    private void OnGameStart()
+    {   
+        if (player1 != null && player2 != null)
+        {
+            ItemTargetTrigger trigger = FindFirstObjectByType<ItemTargetTrigger>();
+            ItemSpawner itemSpawner = FindFirstObjectByType<ItemSpawner>();
+            if (trigger != null && itemSpawner)
+            {
+                trigger.FlyTarget = player1.transform;
+                itemSpawner.ItemSpawnStart();
+            }
         }
     }
 
@@ -123,7 +141,22 @@ public class GameManager : MonoBehaviourPunCallbacks
                 {
                     player2 = view.gameObject;
                     if (cameraMoveManager != null)
+                    {
                         cameraMoveManager.Player2 = player2;
+
+                        if (cameraMoveManager.Vehicle != null)
+                        {
+                            Transform attachPoint = cameraMoveManager.Vehicle.transform.Find("AttachPoint");
+                            if (attachPoint != null)
+                            {
+                                player2.transform.SetParent(attachPoint);
+                                player2.transform.localPosition = Vector3.zero;
+                                player2.transform.localRotation = Quaternion.identity;
+                            }
+                        }
+                    }
+                        
+
                 }
             }
         }
@@ -148,6 +181,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 p2Health.photonView.RPC(nameof(VRPlayerHealth.SetInvincible), RpcTarget.AllBuffered, true); // Player2 무적 설정
             }
+        }
+
+        if (player1 != null && player2 != null)
+        {
+            Debug.Log("[GM] 두 플레이어가 할당됨. 게임 시작");
+            OnGameStart();
         }
     }
 

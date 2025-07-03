@@ -20,11 +20,16 @@ public class CameraMove : MonoBehaviourPun
     [SerializeField] private GameObject player1;
     [SerializeField] private GameObject player2;
 
+    [SerializeField] private GameObject vehicle;
+
     private int index1 = 0;
     private int index2 = 0;
 
-    private bool isMoving = false;
-    private int currentIndex = 0;
+    public GameObject Vehicle
+    {
+        get => vehicle;
+        set => vehicle = value;
+    }
 
     public GameObject Player1
     {
@@ -68,7 +73,11 @@ public class CameraMove : MonoBehaviourPun
         if (player1 == null || player2 == null) return;
 
         StartCoroutine(MoveToPosition(player1, movePointsPlayer1[index1]));
-        StartCoroutine(MoveToPosition(player2, movePointsPlayer2[index2]));
+
+        if (vehicle != null)
+        {
+            StartCoroutine(MoveToPosition(vehicle, movePointsPlayer2[index2]));
+        }        
 
         index1 = (index1 + 1) % movePointsPlayer1.Length;
         index2 = (index2 + 1) % movePointsPlayer2.Length;

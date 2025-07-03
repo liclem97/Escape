@@ -298,7 +298,7 @@ else
     public static void PlayVibration(Controller hand)
     {
 #if Oculus
-        PlayVibration(0.06f, 1, 1, hand);
+        PlayVibration(0.1f, 1, 1, hand);
 #elif Vive
         PlayVibration(0.06f, 160, 0.5f, hand);
 #endif

@@ -1,22 +1,27 @@
 using Photon.Pun;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 
 public class Item : MonoBehaviourPun
 {
-    private Vector3 originalPosition;
-    private Quaternion originalRotation;
+    [SerializeField] protected float autoUseTimer = 1.5f; // 자동 사용 딜레이
+
+    private ItemSpawner itemSpawner;
+
     private bool isHeld = false;
     private bool isInTargetTrigger = false;
+    private bool shouldUseItem = false;
+
     private Transform holder = null;
-    private Transform targetPosition;
+    private Transform targetPlayer;
+    private int holdingPlayerViewID = -1;
+
     public bool IsHeld => isHeld;
 
-    private void Start()
+    public ItemSpawner Spawner
     {
-        originalPosition = transform.position;
-        originalRotation = transform.rotation;
+        get => itemSpawner;
+        set => itemSpawner = value;
     }
 
     public void AttachToLeftHand(int playerViewID)
@@ -25,104 +30,136 @@ public class Item : MonoBehaviourPun
     }
 
     [PunRPC]
-    private void RPC_AttachToLeftHand(int playerViewID)
+    protected virtual void RPC_AttachToLeftHand(int playerViewID)
     {
         PhotonView playerView = PhotonView.Find(playerViewID);
         var rig = playerView?.GetComponentInChildren<OVRCameraRig>();
         Transform leftHand = rig?.leftHandAnchor;
 
-        if (leftHand != null)
+        if (leftHand == null)
         {
-            transform.SetParent(leftHand);
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.identity;
-
-            if (TryGetComponent<Rigidbody>(out var rb)) Destroy(rb);
-            if (TryGetComponent<Collider>(out var col)) Destroy(col);
-
-            isHeld = true;
-            holder = leftHand;
+            Debug.LogWarning("[Item] LeftHandAnchor not found");
+            return;
         }
+
+        transform.SetParent(leftHand);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+
+        if (TryGetComponent<Rigidbody>(out var rb))
+            rb.isKinematic = true;
+
+        isHeld = true;
+        holder = leftHand;
+        holdingPlayerViewID = playerViewID;
     }
 
     public void DetachFromHand()
     {
-        if (!photonView.IsMine) return;
         photonView.RPC(nameof(RPC_DetachFromHand), RpcTarget.AllBuffered);
     }
 
     [PunRPC]
-    private void RPC_DetachFromHand()
+    protected virtual void RPC_DetachFromHand()
     {
         isHeld = false;
         transform.SetParent(null);
         holder = null;
 
-        if (!TryGetComponent<Rigidbody>(out var rb))
-            rb = gameObject.AddComponent<Rigidbody>();
-
-        if (!TryGetComponent<Collider>(out var col))
-            col = gameObject.AddComponent<BoxCollider>();
-
-        // 트리거 안에 있으면 목표로 날아감, 아니면 원래 위치로 복귀
-        if (isInTargetTrigger && targetPosition != null)
+        if (TryGetComponent<Rigidbody>(out var rb))
         {
-            Debug.Log("target position is valid");
-            StartCoroutine(FlyTo(targetPosition.position, 1f));
+            rb.isKinematic = false;
+            rb.detectCollisions = true;
+        }
+
+        if (isInTargetTrigger && targetPlayer != null)
+        {
+            photonView.RPC(nameof(RPC_FlyTo), RpcTarget.AllBuffered,
+                targetPlayer.position, targetPlayer.rotation, 1f);
+            shouldUseItem = true;
+
+            // 모든 클라이언트에서 일정 시간 후 UseItem 시도
+            StartCoroutine(AutoUseAfterDelay(autoUseTimer));
+        }
+        else if (Spawner != null)
+        {
+            photonView.RPC(nameof(RPC_FlyTo), RpcTarget.AllBuffered,
+                Spawner.transform.position, Spawner.transform.rotation, 0.5f);
+
+            transform.SetParent(Spawner.transform);
         }
         else
         {
-            Debug.Log("target position is not valid");
-            StartCoroutine(FlyTo(originalPosition, 0.5f));
+            Debug.LogWarning("[Item] No Spawner assigned, cannot return.");
         }
     }
 
-
-
     public void SetTargetPosition(Transform target)
     {
-        targetPosition = target;
+        targetPlayer = target;
         isInTargetTrigger = true;
     }
 
     public void ClearTargetPosition()
     {
+        targetPlayer = null;
         isInTargetTrigger = false;
-        targetPosition = null;
     }
 
-    private IEnumerator FlyTo(Vector3 target, float duration)
+    [PunRPC]
+    protected virtual void RPC_FlyTo(Vector3 pos, Quaternion rot, float duration)
+    {
+        StartCoroutine(FlyTo(pos, rot, duration));
+    }
+
+    protected IEnumerator FlyTo(Vector3 targetPosition, Quaternion targetRotation, float duration)
     {
         float time = 0f;
-        Vector3 start = transform.position;
+        Vector3 startPos = transform.position;
         Quaternion startRot = transform.rotation;
-
-        if (TryGetComponent<Rigidbody>(out var rb)) Destroy(rb);
-        if (TryGetComponent<Collider>(out var col)) Destroy(col);
 
         while (time < duration)
         {
             time += Time.deltaTime;
             float t = time / duration;
 
-            transform.position = Vector3.Lerp(start, target, t);
-            transform.rotation = Quaternion.Slerp(startRot, originalRotation, t);
+            transform.position = Vector3.Lerp(startPos, targetPosition, t);
+            transform.rotation = Quaternion.Slerp(startRot, targetRotation, t);
 
             yield return null;
         }
 
-        transform.position = target;
+        transform.position = targetPosition;
+        transform.rotation = targetRotation;
+    }
 
-        if (!TryGetComponent<Rigidbody>(out var rb2))
+    private IEnumerator AutoUseAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // 내가 잡은 플레이어가 아니고, 여전히 shouldUseItem 상태라면 사용
+        if (!isHeld && shouldUseItem)
         {
-            rb2 = gameObject.AddComponent<Rigidbody>();
-            rb2.isKinematic = true; // 필요 시 false로
+            photonView.RPC(nameof(UseItem), RpcTarget.AllBuffered);
         }
+    }
 
-        if (!TryGetComponent<Collider>(out var col2))
+    [PunRPC]
+    protected virtual void UseItem()
+    {
+        Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        VRPlayer player = other.GetComponent<VRPlayer>();
+        if (player != null)
         {
-            col2 = gameObject.AddComponent<BoxCollider>();
-            col2.isTrigger = false;
+            PhotonView playerView = player.GetComponent<PhotonView>();
+            if (playerView != null && playerView.ViewID != holdingPlayerViewID && shouldUseItem)
+            {
+                photonView.RPC(nameof(UseItem), RpcTarget.AllBuffered);
+            }
         }
     }
 }
