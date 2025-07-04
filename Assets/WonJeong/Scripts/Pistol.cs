@@ -12,10 +12,16 @@ public class Pistol : Gun
 
     protected override void Fire()
     {
-        Ray ray = new Ray(rayVisualizer.transform.position, rayVisualizer.transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, attackRange))
+        Ray ray = new Ray(muzzlePoint.transform.position, muzzlePoint.transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, attackRange, HitRayMask))
         {
-            if (hit.collider.TryGetComponent(out IDamageable damageable))
+            EnemyBase zombie = hit.collider.GetComponentInParent<EnemyBase>();         
+            // Çìµå¼¦
+            if (hit.collider.CompareTag("Head") && zombie)
+            {                
+                zombie.TakeDamage(gunDamage * 1.5f);
+            }
+            else if (hit.collider.TryGetComponent(out IDamageable damageable))
             {
                 damageable.TakeDamage(gunDamage);
             }
@@ -23,7 +29,10 @@ public class Pistol : Gun
             photonView.RPC(nameof(RPC_SpawnBulletFX), RpcTarget.All, hit.point, hit.normal, hit.collider.gameObject.layer);
             PlayGunFireSound();
             ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
+
+            Debug.DrawRay(muzzlePoint.transform.position, muzzlePoint.transform.forward, Color.red, 10f);
         }
+        base.Fire();
     }
 
     [PunRPC]

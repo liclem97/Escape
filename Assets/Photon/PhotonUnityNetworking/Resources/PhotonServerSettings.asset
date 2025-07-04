@@ -54,6 +54,7 @@ MonoBehaviour:
   - UseItem
   - RPC_SetItemSpawner
   - RPC_ChangeState
+  - On
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

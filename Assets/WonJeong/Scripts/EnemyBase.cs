@@ -50,16 +50,17 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
         //    Debug.LogWarning($"Enemy start: {enemyState}");
         //}
 
-        if (target)
-        {
-            float distance = Vector3.Distance(transform.position, target.position);
-            Debug.Log($"[EnemyBase] Target Distance: {distance:F2}");
-        }
+        //if (target)
+        //{
+        //    float distance = Vector3.Distance(transform.position, target.position);
+        //    Debug.Log($"[EnemyBase] Target Distance: {distance:F2}");
+        //}
     }
 
     protected void ChangeState(EnemyState state)
-    {
-        if (nextState == state) return;
+    {   
+        // 다음 상태가 같음 or 게임 매니저가 유효하지 않음 or 게임 오버 상태이면 리턴
+        if (nextState == state || GameManager.Instance == null || GameManager.Instance.IsGameOver) return;
 
         nextState = state;
 
@@ -81,7 +82,8 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
 
     protected IEnumerator CoIdle()
     {
-        animator.SetTrigger("Idle");
+        //animator.SetTrigger("Idle");
+        animator.SetFloat("Speed", 0f);
         yield return new WaitUntil(() => photonView.IsMine);
 
         rigid.velocity = Vector3.zero;
@@ -94,8 +96,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
 
         while (target == null)
         {
-            target = FindNearestHuman();
-            Debug.Log("target: " + target.name);
+            target = FindNearestHuman();            
             yield return null;
         }
 
@@ -104,7 +105,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
 
     protected Transform FindNearestHuman()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, humanSearchRadius, LayerMask.GetMask("Human", "Player"));
+        Collider[] hits = Physics.OverlapSphere(transform.position, humanSearchRadius, LayerMask.GetMask("Human"/*, "Player"*/));
         Transform nearest = null;
         float closestDist = Mathf.Infinity;
 
@@ -156,18 +157,18 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
         while (target != null && GameManager.Instance != null && !GameManager.Instance.IsGameOver)
         {
             // 공격 애니메이션 실행
-            animator.SetTrigger("Attack");            
-
+            animator.SetTrigger("Attack");
+            animator.SetFloat("Speed", 0f);
             // 공격 딜레이 대기
             yield return new WaitForSeconds(attackDelay);
 
-            // 공격 거리 밖으로 나가면 상태 변경
-            float sqrDist = (target.position - transform.position).sqrMagnitude;
-            if (sqrDist > attackRange * attackRange)
-            {
-                photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Move);
-                yield break;
-            }
+            //// 공격 거리 밖으로 나가면 상태 변경
+            //float sqrDist = (target.position - transform.position).sqrMagnitude;
+            //if (sqrDist > attackRange * attackRange)
+            //{
+            //    photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Move);
+            //    yield break;
+            //}
         }
 
         // 타겟이 사라졌거나 게임이 끝난 경우
@@ -185,10 +186,30 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
 
     public void TakeDamage(float amount)
     {
+        if (enemyState == EnemyState.Die) return;
+
         health -= amount;
+
+        Debug.Log("damage를 받음 " + amount);
         if (health <= 0f)
         {
             photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Die);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // Layer가 "Human" 또는 "Player"인지 확인
+        int otherLayer = other.gameObject.layer;
+        string layerName = LayerMask.LayerToName(otherLayer);
+        if (layerName != "Human" && layerName != "Player") return;        
+
+        // IDamageable 인터페이스 구현체인지 확인
+        IDamageable damageable = other.GetComponent<IDamageable>();
+        if (damageable != null)
+        {
+            damageable.TakeDamage(attackDamage);
+            Debug.Log($"[EnemyBase] {other.name}에게 {attackDamage} 데미지를 줌");
         }
     }
 

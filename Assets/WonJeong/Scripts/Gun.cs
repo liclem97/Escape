@@ -6,8 +6,10 @@ public class Gun : MonoBehaviourPun
     protected enum GunType { Pistol, Revolver, SniperRifle }
     protected enum GunState { Idle, Fire, Reloading }
 
-    [Header("Ray")]
+    [Header("Shoot Point")]
+    [SerializeField] protected Transform muzzlePoint;
     [SerializeField] protected RayVisualizer rayVisualizer;
+    [SerializeField] protected LayerMask HitRayMask;
 
     [Header("Gun Stats")]
     [SerializeField] protected float gunDamage = 10f;
@@ -16,6 +18,7 @@ public class Gun : MonoBehaviourPun
     [SerializeField] protected float attackRange = 100f;
 
     [Header("Gun Effect")]
+    [SerializeField] protected GameObject muzzleFlashEffect;
     [SerializeField] protected GameObject environmentHitEffect;
     [SerializeField] protected GameObject livingHitEffect;
     [SerializeField] protected AudioClip gunFireSound;
@@ -28,6 +31,7 @@ public class Gun : MonoBehaviourPun
 
     protected float lastAttackTime;
     protected int currentAmmo;
+    protected ParticleSystem muzzleEffect;
 
     protected virtual void Start()
     {
@@ -47,11 +51,12 @@ public class Gun : MonoBehaviourPun
         {            
             TryFire();
         }
-
     }
 
     protected void GunInitialize()
     {
+        if (!photonView.IsMine) return;
+
         if (photonView.IsMine && rayVisualizer != null)
             rayVisualizer.On();
 
@@ -62,6 +67,8 @@ public class Gun : MonoBehaviourPun
         gunAudioSource = GetComponent<AudioSource>();
         if (gunAudioSource == null)
             gunAudioSource = gameObject.AddComponent<AudioSource>();
+
+        muzzleEffect =  muzzleFlashEffect.GetComponent<ParticleSystem>();
     }
 
     public void SetTargetHand(Transform hand)
@@ -89,7 +96,10 @@ public class Gun : MonoBehaviourPun
 
     protected virtual void Fire()
     {
-       
+        if (muzzleEffect != null)
+        {
+            muzzleEffect.Play();
+        }            
     }
 
     protected void SpawnBulletFX(Vector3 position, Vector3 normal, int hitLayer)

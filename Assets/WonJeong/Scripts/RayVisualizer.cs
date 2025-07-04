@@ -1,20 +1,35 @@
+ï»¿using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
 public class RayVisualizer : MonoBehaviour
 {
     [Header("Ray")]
-    public LineRenderer Ray;
-    public LayerMask HitRayMask;
-    public float Distance = 100f;
+    [SerializeField] private LineRenderer Ray;
+    [SerializeField] private LayerMask HitRayMask;
+    [SerializeField] private float Distance = 100f;
 
     [Header("Reticle Point")]
-    public GameObject ReticlePoint;
-    public bool ShowReticle = true;
+    [SerializeField] private GameObject ReticlePoint;
+    [SerializeField] private bool ShowReticle = true;
 
-    private void Awake()
+    [Header("Transform")]
+    [SerializeField] private Transform muzzlePoint;
+
+    private PhotonView rootPhotonView;
+
+    private void Start()
     {
-        Off();
+        // ë£¨íŠ¸ì— ìˆëŠ” PhotonView ì°¾ê¸°
+        rootPhotonView = GetComponentInParent<PhotonView>();
+        if (rootPhotonView != null && rootPhotonView.IsMine)
+        {
+            ReticlePoint.SetActive(true); // ë‚´ ê²ƒë§Œ ë³´ì´ê²Œ            
+        }
+        else
+        {
+            ReticlePoint.SetActive(false); // ë‹¤ë¥¸ ì‚¬ëŒì€ í¬ë¡œìŠ¤í—¤ì–´ ì•ˆ ë³´ì„
+        }
     }
 
     public void On()
@@ -34,14 +49,15 @@ public class RayVisualizer : MonoBehaviour
     {
         while (true)
         {
-            // LineTrace: ½ÃÀÛ À§Ä¡, ¹æÇâ, HitResult, °Å¸®, Layer
-            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit HitInfo, Distance, HitRayMask))
+            // LineTrace: ì‹œì‘ ìœ„ì¹˜, ë°©í–¥, HitResult, ê±°ë¦¬, Layer
+            if (Physics.Raycast(muzzlePoint.position, muzzlePoint.forward, out RaycastHit HitInfo, Distance, HitRayMask))
             {
-                Ray.SetPosition(1, transform.InverseTransformPoint(HitInfo.point)); // ¶óÀÎÀÇ ³¡ Á¡À» HitInfo.Point·Î ÁöÁ¤ÇÏµÇ ¿ùµå ÁÂÇ¥ -> ·ÎÄÃ ÁÂÇ¥·Î
+                Ray.SetPosition(0, muzzlePoint.position);
+                Ray.SetPosition(1, HitInfo.point); // ì›”ë“œ ì¢Œí‘œ ê·¸ëŒ€ë¡œ ì‚¬ìš©
                 Ray.enabled = true;
 
                 ReticlePoint.transform.position = HitInfo.point;
-                ReticlePoint.SetActive(ShowReticle); // ´êÀº ÁöÁ¡¿¡ »¡°£ ³×¸ğ¸¦ ±×¸²
+                ReticlePoint.SetActive(ShowReticle); // ë‹¿ì€ ì§€ì ì— ë¹¨ê°„ ë„¤ëª¨ë¥¼ ê·¸ë¦¼
             }
             else
             {
@@ -50,6 +66,18 @@ public class RayVisualizer : MonoBehaviour
             }
 
             yield return null;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Ray.enabled)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(muzzlePoint.position, 0.05f);
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(Ray.GetPosition(1), 0.2f);
         }
     }
 }

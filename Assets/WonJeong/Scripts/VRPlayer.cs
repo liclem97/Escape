@@ -107,33 +107,33 @@ public class VRPlayer : MonoBehaviourPun
 
     private void OnDrawGizmos()
     {
-        if (rightHand == null || leftHand == null || hmd == null)
-        {
-            var rig = GetComponentInChildren<OVRCameraRig>();
-            if (rig != null)
-            {
-                rightHand = rig.rightHandAnchor;
-                leftHand = rig.leftHandAnchor;
-                hmd = rig.centerEyeAnchor;
-            }
-        }
+    //    if (rightHand == null || leftHand == null || hmd == null)
+    //    {
+    //        var rig = GetComponentInChildren<OVRCameraRig>();
+    //        if (rig != null)
+    //        {
+    //            rightHand = rig.rightHandAnchor;
+    //            leftHand = rig.leftHandAnchor;
+    //            hmd = rig.centerEyeAnchor;
+    //        }
+    //    }
 
-        if (rightHand != null)
-        {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(rightHand.position, 0.05f);
-        }
+    //    if (rightHand != null)
+    //    {
+    //        Gizmos.color = Color.blue;
+    //        Gizmos.DrawSphere(rightHand.position, 0.05f);
+    //    }
 
-        if (leftHand != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(leftHand.position, itemGrabDistance);
-        }
+    //    if (leftHand != null)
+    //    {
+    //        Gizmos.color = Color.red;
+    //        Gizmos.DrawSphere(leftHand.position, itemGrabDistance);
+    //    }
 
-        if (hmd != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(hmd.position, 0.05f);
-        }
+    //    if (hmd != null)
+    //    {
+    //        Gizmos.color = Color.yellow;
+    //        Gizmos.DrawSphere(hmd.position, 0.05f);
+    //    }
     }
 }

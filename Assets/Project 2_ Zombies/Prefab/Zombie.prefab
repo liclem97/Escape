@@ -2772,6 +2772,7 @@ GameObject:
   - component: {fileID: 5465873790849261494}
   - component: {fileID: 8811681201023040918}
   - component: {fileID: 5354950321562740143}
+  - component: {fileID: 3657713385648273901}
   - component: {fileID: 297916057265736590}
   - component: {fileID: 1223868252224267037}
   m_Layer: 7
@@ -2780,7 +2781,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6696561392147084754
 Transform:
   m_ObjectHideFlags: 0
@@ -2860,10 +2861,10 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.88, y: 0.87, z: 0.61}
-  m_Center: {x: 0, y: 1.14, z: 0.24}
+  m_Center: {x: 0, y: 1.14, z: 0.5}
 --- !u!54 &5465873790849261494
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2931,7 +2932,21 @@ MonoBehaviour:
   humanSearchRadius: 20
   attackRange: 1
   attackDamage: 10
+  attackDelay: 3
   health: 100
+--- !u!114 &3657713385648273901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6453621720430884070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 545328fdf8d25254cbfc6af574ae2c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackCollider: {fileID: 1447344524536533413}
 --- !u!114 &297916057265736590
 MonoBehaviour:
   m_ObjectHideFlags: 0
