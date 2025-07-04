@@ -8,6 +8,7 @@ TagManager:
   - Bullet
   - SamplesInfoPanel
   - Head
+  - CinemachineTarget
   layers:
   - Default
   - TransparentFX
@@ -21,8 +22,8 @@ TagManager:
   - Environment
   - Weapon
   - Item
-  - 
-  - 
+  - PlayerHead
+  - Bomb
   - 
   - 
   - 

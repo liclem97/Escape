@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class VRPlayer : MonoBehaviourPun
 {
+    [Header("Character Reference")]
+    [SerializeField] private Transform hmdFollowerSphere;
+
     [Header("Gun Prefab")]
     [SerializeField] private GameObject gunPrefab;
 
@@ -48,6 +51,13 @@ public class VRPlayer : MonoBehaviourPun
     private void Update()
     {
         if (!photonView.IsMine) return;
+
+        // HMD 위치를 Sphere에 반영
+        if (hmd != null && hmdFollowerSphere != null)
+        {
+            hmdFollowerSphere.position = hmd.position;
+            hmdFollowerSphere.rotation = hmd.rotation;
+        }
 
         // 왼손 핸드트리거를 눌렀을 때
         if (ARAVRInput.GetDown(ARAVRInput.Button.HandTrigger, ARAVRInput.Controller.LTouch))

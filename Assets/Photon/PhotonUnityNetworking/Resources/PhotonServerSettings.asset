@@ -55,6 +55,7 @@ MonoBehaviour:
   - RPC_SetItemSpawner
   - RPC_ChangeState
   - On
+  - RPC_PlayExplosionEffect
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

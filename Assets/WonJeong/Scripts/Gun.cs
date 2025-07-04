@@ -23,6 +23,10 @@ public class Gun : MonoBehaviourPun
     [SerializeField] protected GameObject livingHitEffect;
     [SerializeField] protected AudioClip gunFireSound;
 
+    [Header("Camera Shake")]
+    [SerializeField] protected float shakeDuration = 0.1f;      // 카메라 셰이크 지속시간
+    [SerializeField] protected float shakeMagnitude = 0.05f;    // 카메라 셰이크 세기
+
     private AudioSource gunAudioSource;
     private Transform targetHand;
 
@@ -99,7 +103,8 @@ public class Gun : MonoBehaviourPun
         if (muzzleEffect != null)
         {
             muzzleEffect.Play();
-        }            
+        }
+        //PlayCameraShake();
     }
 
     protected void SpawnBulletFX(Vector3 position, Vector3 normal, int hitLayer)
@@ -108,7 +113,7 @@ public class Gun : MonoBehaviourPun
 
         if (hitLayer == LayerMask.NameToLayer("Zombie") || hitLayer == LayerMask.NameToLayer("Human"))
             effect = livingHitEffect;
-        else if (hitLayer == LayerMask.NameToLayer("Environment"))
+        else if (hitLayer == LayerMask.NameToLayer("Environment") || hitLayer == LayerMask.NameToLayer("Bomb"))
             effect = environmentHitEffect;
 
         if (effect != null)
@@ -127,6 +132,27 @@ public class Gun : MonoBehaviourPun
         if (gunFireSound != null && gunAudioSource != null)
             gunAudioSource.PlayOneShot(gunFireSound);
     }
+
+    //protected void PlayCameraShake()
+    //{
+    //    if (photonView.IsMine)
+    //    {
+    //        var rig = FindFirstObjectByType<OVRCameraRig>();
+    //        if (rig != null)
+    //        {
+    //            var centerEye = rig.centerEyeAnchor;
+    //            if (centerEye != null && centerEye.TryGetComponent(out CameraShake shake))
+    //            {
+    //                StartCoroutine(shake.Shake(shakeDuration, shakeMagnitude));
+    //                Debug.Log("camera Shake 실행됨.");
+    //            }
+    //            else
+    //            {
+    //                Debug.LogWarning("CameraShake 컴포넌트를 CenterEyeAnchor에서 찾을 수 없음.");
+    //            }
+    //        }
+    //    }
+    //}
 
     public virtual void Reload()
     {
