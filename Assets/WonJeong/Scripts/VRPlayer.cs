@@ -6,21 +6,19 @@ public class VRPlayer : MonoBehaviourPun
     [Header("Character Reference")]
     [SerializeField] private Transform hmdFollowerSphere;
 
-    [Header("Gun Prefab")]
-    [SerializeField] private GameObject gunPrefab;
-
     [Header("Item")]
     [SerializeField] private float itemGrabDistance;
 
     private Transform rightHand;
     private Transform leftHand;
     private Transform hmd;
+    private OVRCameraRig rig;
 
     private Item heldItem = null;
 
     private void Start()
     {
-        var rig = GetComponentInChildren<OVRCameraRig>();
+        rig = GetComponentInChildren<OVRCameraRig>();
 
         if (!photonView.IsMine)
         {
@@ -38,14 +36,7 @@ public class VRPlayer : MonoBehaviourPun
             rightHand = rig.rightHandAnchor;
             leftHand = rig.leftHandAnchor;
             hmd = rig.centerEyeAnchor;
-        }
-
-        // 총은 네트워크로 스폰
-        if (photonView.IsMine && rightHand != null && gunPrefab != null)
-        {
-            GameObject gun = PhotonNetwork.Instantiate("Pistol", rightHand.position, rightHand.rotation);
-            photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, gun.GetComponent<PhotonView>().ViewID);
-        }
+        }      
     }
 
     private void Update()
@@ -71,6 +62,21 @@ public class VRPlayer : MonoBehaviourPun
         }
     }
 
+    public void InitPlayer1()
+    {
+        // 총은 네트워크로 스폰
+        if (photonView.IsMine && rightHand != null)
+        {
+            GameObject gun = PhotonNetwork.Instantiate("Pistol", rightHand.position, rightHand.rotation);
+            photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, gun.GetComponent<PhotonView>().ViewID);
+        }
+    }
+
+    public void InitPlayer2()
+    {
+
+    }
+
     [PunRPC]
     private void AttachGunToHand(int gunViewID)
     {
@@ -84,7 +90,7 @@ public class VRPlayer : MonoBehaviourPun
                 Gun gunScript = gunView.GetComponent<Gun>();
                 if (gunScript != null)
                 {
-                    gunScript.SetTargetHand(hand);
+                    gunScript.SetTargetHand(hand, rig);
                 }
             }
         }

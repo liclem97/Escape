@@ -136,6 +136,10 @@ public class GameManager : MonoBehaviourPunCallbacks
                     player1 = view.gameObject;
                     if (cameraMoveManager != null)
                         cameraMoveManager.Player1 = player1;
+
+                    // InitPlayer1 호출
+                    VRPlayer vrPlayer = player1.GetComponent<VRPlayer>();
+                    vrPlayer?.InitPlayer1();
                 }
                 else if (actorNumber == 2 && player2 == null)
                 {
@@ -155,8 +159,9 @@ public class GameManager : MonoBehaviourPunCallbacks
                             }
                         }
                     }
-                        
-
+                    // InitPlayer2 호출
+                    VRPlayer vrPlayer = player2.GetComponent<VRPlayer>();
+                    vrPlayer?.InitPlayer2();
                 }
             }
         }

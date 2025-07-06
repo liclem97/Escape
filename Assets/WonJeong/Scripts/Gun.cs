@@ -1,10 +1,11 @@
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class Gun : MonoBehaviourPun
 {
     protected enum GunType { Pistol, Revolver, SniperRifle }
-    protected enum GunState { Idle, Fire, Reloading }
 
     [Header("Shoot Point")]
     [SerializeField] protected Transform muzzlePoint;
@@ -23,15 +24,19 @@ public class Gun : MonoBehaviourPun
     [SerializeField] protected GameObject livingHitEffect;
     [SerializeField] protected AudioClip gunFireSound;
 
-    [Header("Camera Shake")]
-    [SerializeField] protected float shakeDuration = 0.1f;      // 카메라 셰이크 지속시간
-    [SerializeField] protected float shakeMagnitude = 0.05f;    // 카메라 셰이크 세기
+    [Header("Camera Zoom")]
+    [SerializeField] private float zoomFOV = 30f;
+    [SerializeField] private float normalFOV = 60f;
+    [SerializeField] private float zoomSpeed = 10f;
+
+    private OVRCameraRig playerRig;
+    private Camera eyeCamera;
+    private bool isZooming = false;
 
     private AudioSource gunAudioSource;
     private Transform targetHand;
 
     protected GunType gunType = GunType.Pistol;
-    protected GunState gunState = GunState.Idle;
 
     protected float lastAttackTime;
     protected int currentAmmo;
@@ -55,34 +60,93 @@ public class Gun : MonoBehaviourPun
         {            
             TryFire();
         }
+        if (ARAVRInput.GetDown(ARAVRInput.Button.One, ARAVRInput.Controller.RTouch))
+        {
+            TryZoom(true);
+        }
+        else if (ARAVRInput.GetUp(ARAVRInput.Button.One, ARAVRInput.Controller.RTouch))
+        {
+            TryZoom(false);
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (!photonView.IsMine || eyeCamera == null) return;
+
+        float targetFOV = isZooming ? zoomFOV : normalFOV;
+        eyeCamera.fieldOfView = Mathf.Lerp(eyeCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
+    }
+
+    public void SetTargetHand(Transform hand, OVRCameraRig rig)
+    {
+        targetHand = hand;
+        playerRig = rig;
+
+        if (playerRig != null)
+        {
+            eyeCamera = playerRig.centerEyeAnchor.GetComponent<Camera>();
+            if (eyeCamera != null)
+            {
+                eyeCamera.fieldOfView = normalFOV;
+            }
+            else
+            {
+                Debug.LogWarning("centerEyeAnchor에 Camera가 없습니다.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("OVRCameraRig이 설정되지 않았습니다.");
+        }
+    }
+
+    private void TryZoom(bool zoomIn)
+    {
+        if (!photonView.IsMine || gunType != GunType.SniperRifle || eyeCamera == null)
+            return;
+
+        isZooming = zoomIn;
     }
 
     protected void GunInitialize()
     {
         if (!photonView.IsMine) return;
 
-        if (photonView.IsMine && rayVisualizer != null)
-            rayVisualizer.On();
+        InitializeRayVisualizer();
+        InitializeAmmo();
+        InitializeAudio();
+        CacheMuzzleEffect();
+    }
 
+    private void InitializeRayVisualizer()
+    {
+        if (rayVisualizer != null)
+            rayVisualizer.On();
+    }
+
+    private void InitializeAmmo()
+    {
         if (gunType != GunType.Pistol)
             currentAmmo = maxAmmo;
+    }
 
-        // 총 오디오 소스가 없으면 컴포넌트 추가
+    private void InitializeAudio()
+    {
         gunAudioSource = GetComponent<AudioSource>();
         if (gunAudioSource == null)
             gunAudioSource = gameObject.AddComponent<AudioSource>();
-
-        muzzleEffect =  muzzleFlashEffect.GetComponent<ParticleSystem>();
     }
 
-    public void SetTargetHand(Transform hand)
+    private void CacheMuzzleEffect()
     {
-        targetHand = hand;
+        if (muzzleFlashEffect != null)
+            muzzleEffect = muzzleFlashEffect.GetComponent<ParticleSystem>();
     }
 
     protected virtual void TryFire()
     {
-        if (Time.time - lastAttackTime < gunAttackDelay || gunState != GunState.Idle)
+        if (Time.time - lastAttackTime < gunAttackDelay)
             return;
 
         if (gunType != GunType.Pistol && currentAmmo <= 0)
@@ -104,7 +168,6 @@ public class Gun : MonoBehaviourPun
         {
             muzzleEffect.Play();
         }
-        //PlayCameraShake();
     }
 
     protected void SpawnBulletFX(Vector3 position, Vector3 normal, int hitLayer)
@@ -133,34 +196,8 @@ public class Gun : MonoBehaviourPun
             gunAudioSource.PlayOneShot(gunFireSound);
     }
 
-    //protected void PlayCameraShake()
-    //{
-    //    if (photonView.IsMine)
-    //    {
-    //        var rig = FindFirstObjectByType<OVRCameraRig>();
-    //        if (rig != null)
-    //        {
-    //            var centerEye = rig.centerEyeAnchor;
-    //            if (centerEye != null && centerEye.TryGetComponent(out CameraShake shake))
-    //            {
-    //                StartCoroutine(shake.Shake(shakeDuration, shakeMagnitude));
-    //                Debug.Log("camera Shake 실행됨.");
-    //            }
-    //            else
-    //            {
-    //                Debug.LogWarning("CameraShake 컴포넌트를 CenterEyeAnchor에서 찾을 수 없음.");
-    //            }
-    //        }
-    //    }
-    //}
-
     public virtual void Reload()
     {
         if (gunType == GunType.Pistol) return;
-
-        gunState = GunState.Reloading;
-        // 리로드 애니메이션 후 호출될 수 있도록 코루틴 가능
-        currentAmmo = maxAmmo;
-        gunState = GunState.Idle;
     }
 }
