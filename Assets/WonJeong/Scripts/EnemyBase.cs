@@ -184,13 +184,13 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
         rigid.velocity = Vector3.zero;
     }
 
-    public void TakeDamage(float amount)
+    public void TakeDamage(float amount, int instigatorID)
     {
         if (enemyState == EnemyState.Die) return;
 
         health -= amount;
 
-        Debug.Log("damage를 받음 " + amount);
+        Debug.Log("damage를 받음 " + amount + " 공격자: " + PhotonView.Find(instigatorID).Owner.NickName);
         if (health <= 0f)
         {
             photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Die);
@@ -208,12 +208,12 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
         IDamageable damageable = other.GetComponent<IDamageable>();
         if (damageable != null)
         {
-            damageable.TakeDamage(attackDamage);
+            damageable.TakeDamage(attackDamage, photonView.ViewID);
             Debug.Log($"[EnemyBase] {other.name}에게 {attackDamage} 데미지를 줌");
         }
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, humanSearchRadius);

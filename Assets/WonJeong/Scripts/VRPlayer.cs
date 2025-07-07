@@ -74,7 +74,12 @@ public class VRPlayer : MonoBehaviourPun
 
     public void InitPlayer2()
     {
-
+        // 총은 네트워크로 스폰
+        if (photonView.IsMine && rightHand != null)
+        {
+            GameObject gun = PhotonNetwork.Instantiate("Pistol", rightHand.position, rightHand.rotation);
+            photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, gun.GetComponent<PhotonView>().ViewID);
+        }
     }
 
     [PunRPC]

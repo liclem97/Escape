@@ -473,6 +473,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3388020441628312420, guid: 187aed4f4cfc3e14a9bbd8679add1050, type: 3}
+      propertyPath: m_Name
+      value: MagazineText
+      objectReference: {fileID: 0}
+    - target: {fileID: 3388020441628312420, guid: 187aed4f4cfc3e14a9bbd8679add1050, type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}

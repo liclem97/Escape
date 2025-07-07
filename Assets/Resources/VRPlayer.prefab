@@ -280,7 +280,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hmdFollowerSphere: {fileID: 5245531066004730277}
-  gunPrefab: {fileID: 3179007316253746846, guid: 4583b8f883ec10e4991695c3b01bc31d, type: 3}
   itemGrabDistance: 0.4
 --- !u!114 &803809912899137726
 MonoBehaviour:

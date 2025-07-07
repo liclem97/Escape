@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
@@ -13,6 +14,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private Transform player1SpawnPoint;
     [SerializeField] private Transform player2SpawnPoint;
 
+    [Header("Stage Start Point")]
+    [SerializeField] private Transform player1Stage1Point;
+    [SerializeField] private Transform player2Stage1Point;
+
     [Header("Managers")]
     [SerializeField] private CameraMove cameraMoveManager;
 
@@ -20,7 +25,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject player1;
     [SerializeField] private GameObject player2;
 
-    private bool isGameOver = false;    
+    public GameObject GetPlayer1() => player1;
+    public GameObject GetPlayer2() => player2;
+
+    private bool isGameOver = false;
     public bool IsGameOver
     {
         get => isGameOver;
@@ -43,14 +51,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         // cameraMoveManager가 없을 경우 자동으로 찾기 (예외 방지)
-        if (cameraMoveManager == null)
-        {
-            cameraMoveManager = FindFirstObjectByType<CameraMove>();
-            if (cameraMoveManager == null)
-            {
-                Debug.LogError("[GameManager] CameraMoveManager를 찾을 수 없습니다.");
-            }
-        }
+        //if (cameraMoveManager == null)
+        //{
+        //    cameraMoveManager = FindFirstObjectByType<CameraMove>();
+        //    if (cameraMoveManager == null)
+        //    {
+        //        Debug.LogError("[GameManager] CameraMoveManager를 찾을 수 없습니다.");
+        //    }
+        //}
     }
 
     private void Start()
@@ -68,16 +76,25 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     private void OnGameStart()
-    {   
-        if (player1 != null && player2 != null)
+    {
+        if (player1 == null || player2 == null) return;
+
+        if (player1Stage1Point != null)
         {
-            ItemTargetTrigger trigger = FindFirstObjectByType<ItemTargetTrigger>();
-            ItemSpawner itemSpawner = FindFirstObjectByType<ItemSpawner>();
-            if (trigger != null && itemSpawner)
-            {
-                trigger.FlyTarget = player1.transform;
-                itemSpawner.ItemSpawnStart();
-            }
+            CameraMove.Instance.StartCoroutine(CameraMove.Instance.MoveToPosition(player1, player1Stage1Point, 2f));
+        }
+
+        if (player2Stage1Point != null)
+        {
+            CameraMove.Instance.StartCoroutine(CameraMove.Instance.MoveToPosition(CameraMove.Instance.Vehicle, player2Stage1Point, 2f));
+        }
+
+        ItemTargetTrigger trigger = FindFirstObjectByType<ItemTargetTrigger>();
+        ItemSpawner itemSpawner = FindFirstObjectByType<ItemSpawner>();
+        if (trigger != null && itemSpawner)
+        {
+            trigger.FlyTarget = player1.transform;
+            itemSpawner.ItemSpawnStart();
         }
     }
 
@@ -103,7 +120,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         // 플레이어 생성
         GameObject player = PhotonNetwork.Instantiate(prefabName, spawn.position, spawn.rotation);
-       
+
         // 닉네임으로 이름 설정 (로컬에서만 적용됨)   
         player.name = PhotonNetwork.NickName;
 
@@ -134,8 +151,8 @@ public class GameManager : MonoBehaviourPunCallbacks
                 if (actorNumber == 1 && player1 == null)
                 {
                     player1 = view.gameObject;
-                    if (cameraMoveManager != null)
-                        cameraMoveManager.Player1 = player1;
+                    //if (cameraMoveManager != null)
+                    //    cameraMoveManager.Player1 = player1;
 
                     // InitPlayer1 호출
                     VRPlayer vrPlayer = player1.GetComponent<VRPlayer>();
@@ -144,13 +161,13 @@ public class GameManager : MonoBehaviourPunCallbacks
                 else if (actorNumber == 2 && player2 == null)
                 {
                     player2 = view.gameObject;
-                    if (cameraMoveManager != null)
+                    if (CameraMove.Instance != null)
                     {
-                        cameraMoveManager.Player2 = player2;
+                        //cameraMoveManager.Player2 = player2;
 
-                        if (cameraMoveManager.Vehicle != null)
+                        if (CameraMove.Instance.Vehicle != null)
                         {
-                            Transform attachPoint = cameraMoveManager.Vehicle.transform.Find("AttachPoint");
+                            Transform attachPoint = CameraMove.Instance.Vehicle.transform.Find("AttachPoint");
                             if (attachPoint != null)
                             {
                                 player2.transform.SetParent(attachPoint);

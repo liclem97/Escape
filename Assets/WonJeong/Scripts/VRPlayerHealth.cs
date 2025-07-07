@@ -20,7 +20,7 @@ public class VRPlayerHealth : MonoBehaviourPun, IDamageable
 
     }
 
-    public void TakeDamage(float amount)
+    public void TakeDamage(float amount, int instigatorID)
     {
         if (isInvincible) return;
 

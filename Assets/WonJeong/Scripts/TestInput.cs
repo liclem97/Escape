@@ -17,7 +17,7 @@ public class TestInput : MonoBehaviourPun
         {
             if (GameManager.player1Health != null)
             {
-                GameManager.player1Health.TakeDamage(10f);
+                GameManager.player1Health.TakeDamage(10f, -1);
                 //photonView.RPC(nameof(RPC_PlayerTakeDamage), RpcTarget.AllBuffered, 10f);
                 Debug.Log($"[TestInput] 체력 감소: {GameManager.player1Health.currentHealth}");
 
@@ -38,7 +38,7 @@ public class TestInput : MonoBehaviourPun
     [PunRPC]
     private void RPC_PlayerTakeDamage(float amount)
     {
-        GameManager.player1Health.TakeDamage(10f);
+        GameManager.player1Health.TakeDamage(10f, -1);
     }
 
     [PunRPC]

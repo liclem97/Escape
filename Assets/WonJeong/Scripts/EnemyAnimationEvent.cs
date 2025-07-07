@@ -21,4 +21,9 @@ public class EnemyAnimationEvent : MonoBehaviour
             attackCollider.enabled = false;
         }
     }
+
+    public void SetActivateFalseEnemy()
+    {
+        gameObject.SetActive(false);
+    }
 }

@@ -27,7 +27,7 @@ public class Bomb : MonoBehaviourPun, IDamageable
     }
 
     //IDamageable
-    public void TakeDamage(float amount)
+    public void TakeDamage(float amount, int instigatorID)
     {
         if (isExploded) return;
 
@@ -60,7 +60,7 @@ public class Bomb : MonoBehaviourPun, IDamageable
                     float damageRatio = Mathf.Clamp01(1f - distance / bombRange); // 가까울수록 1, 멀수록 0
                     float finalDamage = bombDamage * damageRatio;
 
-                    target.TakeDamage(finalDamage);
+                    target.TakeDamage(finalDamage, 1);
                 }
             }
         }

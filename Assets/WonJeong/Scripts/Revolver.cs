@@ -19,11 +19,11 @@ public class Revolver : Gun
             // Çìµå¼¦
             if (hit.collider.CompareTag("Head") && zombie)
             {
-                zombie.TakeDamage(gunDamage * 1.5f);
+                //zombie.TakeDamage(gunDamage * 1.5f);
             }
             else if (hit.collider.TryGetComponent(out IDamageable damageable))
             {
-                damageable.TakeDamage(gunDamage);
+               // damageable.TakeDamage(gunDamage);
             }
 
             photonView.RPC(nameof(RPC_SpawnBulletFX), RpcTarget.All, hit.point, hit.normal, hit.collider.gameObject.layer);
