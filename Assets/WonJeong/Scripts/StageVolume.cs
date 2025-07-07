@@ -31,10 +31,12 @@ public class StageVolume : MonoBehaviourPun
 
         if (other.CompareTag("Player") && other.GetComponent<PhotonView>().IsMine)
         {
-            ActivateVolume();
+            //ActivateVolume();
+            photonView.RPC(nameof(ActivateVolume), RpcTarget.AllBuffered);
         }
     }
 
+    [PunRPC]
     private void ActivateVolume()
     {
         if (isActivated) return;

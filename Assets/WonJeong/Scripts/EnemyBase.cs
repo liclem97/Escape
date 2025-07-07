@@ -105,7 +105,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
 
     protected Transform FindNearestHuman()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, humanSearchRadius, LayerMask.GetMask("Human"/*, "Player"*/));
+        Collider[] hits = Physics.OverlapSphere(transform.position, humanSearchRadius, LayerMask.GetMask("Human", "Player"));
         Transform nearest = null;
         float closestDist = Mathf.Infinity;
 

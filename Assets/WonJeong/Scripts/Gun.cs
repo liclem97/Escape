@@ -21,25 +21,28 @@ public class Gun : MonoBehaviourPun
     [SerializeField] protected GameObject muzzleFlashEffect;
     [SerializeField] protected GameObject environmentHitEffect;
     [SerializeField] protected GameObject livingHitEffect;
-    [SerializeField] protected AudioClip gunFireSound;
-
-    [Header("Camera Zoom")]
-    [SerializeField] private float zoomFOV = 30f;
-    [SerializeField] private float normalFOV = 60f;
-    [SerializeField] private float zoomSpeed = 10f;
+    [SerializeField] protected AudioClip gunFireSound;   
 
     [Header("UI")]
     [SerializeField] protected Text ammoText;
 
-    private OVRCameraRig playerRig;
-    private Camera eyeCamera;
-    private bool isZooming = false;
+    [Header("Camera Zoom")]
+    [SerializeField] protected float zoomFOV = 30f;
+    [SerializeField] protected float normalFOV = 60f;
+    [SerializeField] protected float zoomSpeed = 10f;
+    [SerializeField] protected float zoomOffset = 0.2f; // 앞쪽으로 당기는 거리
+
+    protected Vector3 originalHeadLocalPos;
+    protected bool headOffsetApplied = false;
+
+    protected OVRCameraRig playerRig;
+    protected Camera eyeCamera;
+    protected bool isZooming = false;
 
     private AudioSource gunAudioSource;
     private Transform targetHand;
 
     protected GunType gunType = GunType.Pistol;
-
     protected float lastAttackTime;
     protected int currentAmmo;
     protected ParticleSystem muzzleEffect;
@@ -61,26 +64,10 @@ public class Gun : MonoBehaviourPun
         if (ARAVRInput.GetDown(ARAVRInput.Button.IndexTrigger, ARAVRInput.Controller.RTouch))
         {            
             TryFire();
-        }
-        if (ARAVRInput.GetDown(ARAVRInput.Button.One, ARAVRInput.Controller.RTouch))
-        {
-            TryZoom(true);
-        }
-        else if (ARAVRInput.GetUp(ARAVRInput.Button.One, ARAVRInput.Controller.RTouch))
-        {
-            TryZoom(false);
-        }
+        }       
     }
 
-    private void LateUpdate()
-    {
-        if (!photonView.IsMine || eyeCamera == null) return;
-
-        float targetFOV = isZooming ? zoomFOV : normalFOV;
-        eyeCamera.fieldOfView = Mathf.Lerp(eyeCamera.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
-    }
-
-    public void SetTargetHand(Transform hand, OVRCameraRig rig)
+    public void SetTargetHandAndRig(Transform hand, OVRCameraRig rig)
     {
         targetHand = hand;
         playerRig = rig;
@@ -90,25 +77,9 @@ public class Gun : MonoBehaviourPun
             eyeCamera = playerRig.centerEyeAnchor.GetComponent<Camera>();
             if (eyeCamera != null)
             {
-                eyeCamera.fieldOfView = normalFOV;
-            }
-            else
-            {
-                Debug.LogWarning("centerEyeAnchor에 Camera가 없습니다.");
+                originalHeadLocalPos = playerRig.centerEyeAnchor.localPosition;
             }
         }
-        else
-        {
-            Debug.LogWarning("OVRCameraRig이 설정되지 않았습니다.");
-        }
-    }
-
-    private void TryZoom(bool zoomIn)
-    {
-        if (!photonView.IsMine || gunType != GunType.SniperRifle || eyeCamera == null)
-            return;
-
-        isZooming = zoomIn;
     }
 
     protected void GunInitialize()
@@ -161,7 +132,7 @@ public class Gun : MonoBehaviourPun
         Fire();
         lastAttackTime = Time.time;
 
-        if (gunType != GunType.Pistol)
+        if (gunType == GunType.Revolver)
         {
             currentAmmo--;
             UpdateAmmoText();

@@ -14,9 +14,9 @@ public class Revolver : Gun
     {
         if (currentAmmo <= 0) return;
         Debug.Log("currentAmmo: " + currentAmmo);
+        ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
 
         Ray ray = new Ray(muzzlePoint.transform.position, muzzlePoint.transform.forward);
-
         if (Physics.Raycast(ray, out RaycastHit hit, attackRange, HitRayMask))
         {
             EnemyBase zombie = hit.collider.GetComponentInParent<EnemyBase>();
@@ -33,15 +33,7 @@ public class Revolver : Gun
             }
 
             photonView.RPC(nameof(RPC_SpawnBulletFX), RpcTarget.All, hit.point, hit.normal, hit.collider.gameObject.layer);
-            PlayGunFireSound();
-            ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
-            Debug.Log("revolver fire");
-
-            //Debug.DrawRay(muzzlePoint.transform.position, muzzlePoint.transform.forward, Color.red, 10f);
-        }
-        else
-        {
-            Debug.Log("ray not valid");
+            PlayGunFireSound();            
         }
         base.Fire();
     }

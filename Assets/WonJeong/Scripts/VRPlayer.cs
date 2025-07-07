@@ -72,7 +72,9 @@ public class VRPlayer : MonoBehaviourPun
         {
             GameObject gun = PhotonNetwork.Instantiate("Revolver", rightHand.position, rightHand.rotation);
             //GameObject gun = PhotonNetwork.Instantiate("Pistol", rightHand.position, rightHand.rotation);
+            //GameObject gun = PhotonNetwork.Instantiate("SniperRifle", rightHand.position, rightHand.rotation);
             photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, gun.GetComponent<PhotonView>().ViewID);
+            StartAmmoSpawn();
         }
     }
 
@@ -81,7 +83,7 @@ public class VRPlayer : MonoBehaviourPun
         // 총은 네트워크로 스폰
         if (photonView.IsMine && rightHand != null)
         {
-            GameObject gun = PhotonNetwork.Instantiate("Pistol", rightHand.position, rightHand.rotation);
+            GameObject gun = PhotonNetwork.Instantiate("SniperRifle", rightHand.position, rightHand.rotation);
             photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, gun.GetComponent<PhotonView>().ViewID);
         }
     }
@@ -99,7 +101,7 @@ public class VRPlayer : MonoBehaviourPun
                 Gun gunScript = gunView.GetComponent<Gun>();
                 if (gunScript != null)
                 {
-                    gunScript.SetTargetHand(hand, rig);
+                    gunScript.SetTargetHandAndRig(hand, rig);
                 }
             }
         }
