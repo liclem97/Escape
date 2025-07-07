@@ -33,4 +33,17 @@ public class HealPack : Item
         }
         base.UseItem(); // Destroy
     }
+
+    protected void OnTriggerEnter(Collider other)
+    {
+        VRPlayer player = other.GetComponent<VRPlayer>();
+        if (player != null)
+        {
+            PhotonView playerView = player.GetComponent<PhotonView>();
+            if (playerView != null && playerView.ViewID != holdingPlayerViewID && shouldUseItem)
+            {
+                photonView.RPC(nameof(UseItem), RpcTarget.AllBuffered);
+            }
+        }
+    }
 }

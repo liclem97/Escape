@@ -4,7 +4,7 @@ using System.Collections;
 
 public class ItemSpawner : MonoBehaviourPun
 {
-    [SerializeField] private string healPackPrefabName = "HealPack"; // Resources/HealPack.prefab
+    [SerializeField] protected string spawnItemPrefabName = ""; 
     [SerializeField] private Transform spawnPoint; // 아이템 생성 위치
     [SerializeField] private float itemSpawnDelay = 5f;
 
@@ -30,12 +30,12 @@ public class ItemSpawner : MonoBehaviourPun
     {
         if (currentItem != null) return;
 
-        GameObject spawned = PhotonNetwork.Instantiate(healPackPrefabName, spawnPoint.position, spawnPoint.rotation);
+        GameObject spawned = PhotonNetwork.Instantiate(spawnItemPrefabName, spawnPoint.position, spawnPoint.rotation);
         currentItem = spawned;
 
         // 스폰된 아이템에게 이 Spawner의 ViewID를 전달
         int itemViewID = spawned.GetComponent<PhotonView>().ViewID;
-        int spawnerViewID = GetComponent<PhotonView>().ViewID;
+        int spawnerViewID = GetComponent<PhotonView>().ViewID;     
 
         photonView.RPC(nameof(RPC_SetItemSpawner), RpcTarget.AllBuffered, itemViewID, spawnerViewID);
 

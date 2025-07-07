@@ -24,14 +24,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2370387691083874301}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.009, z: 0.146}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3938493566965134960}
   m_Father: {fileID: 145285294422871605}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3179007316253746846
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,16 +87,17 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 9088
   gunDamage: 20
-  gunAttackDelay: 1
+  gunAttackDelay: 0.2
   maxAmmo: 6
   attackRange: 100
-  muzzleFlashEffect: {fileID: 1000010254994808, guid: f727b991d0219784d9d2a8a42aec6fbd, type: 3}
+  muzzleFlashEffect: {fileID: 5048848354315384715}
   environmentHitEffect: {fileID: 100002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
   livingHitEffect: {fileID: 49513035396359876, guid: e5073db2f4b27914097086d470a044d5, type: 3}
   gunFireSound: {fileID: 0}
   zoomFOV: 30
   normalFOV: 60
   zoomSpeed: 10
+  ammoText: {fileID: 5624538112133726185}
 --- !u!82 &4259188243431709261
 AudioSource:
   m_ObjectHideFlags: 0
@@ -269,7 +270,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6071506722569324530
 GameObject:
@@ -295,7 +296,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6071506722569324530}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -304,7 +305,7 @@ Transform:
   - {fileID: 5310139647055161556}
   - {fileID: 981243792927960101}
   m_Father: {fileID: 4691944457519692821}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7609194020002008715
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,7 +475,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3388020441628312420, guid: 187aed4f4cfc3e14a9bbd8679add1050, type: 3}
       propertyPath: m_Name
-      value: MagazineText
+      value: AmmoText
       objectReference: {fileID: 0}
     - target: {fileID: 3388020441628312420, guid: 187aed4f4cfc3e14a9bbd8679add1050, type: 3}
       propertyPath: m_Layer
@@ -558,6 +559,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2370928509661580930, guid: 187aed4f4cfc3e14a9bbd8679add1050, type: 3}
   m_PrefabInstance: {fileID: 691497481272811001}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5048848354315384715 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5731302902129977970, guid: 187aed4f4cfc3e14a9bbd8679add1050, type: 3}
+  m_PrefabInstance: {fileID: 691497481272811001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5624538112133726185 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5158573031479026192, guid: 187aed4f4cfc3e14a9bbd8679add1050, type: 3}
+  m_PrefabInstance: {fileID: 691497481272811001}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3295892559956094435
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -588,7 +605,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2315774716378218950, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.008
       objectReference: {fileID: 0}
     - target: {fileID: 2315774716378218950, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_LocalPosition.z
@@ -664,7 +681,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6903968931419334616, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7768120445289537023, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_Layer

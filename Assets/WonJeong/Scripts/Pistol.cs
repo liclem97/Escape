@@ -32,7 +32,7 @@ public class Pistol : Gun
             PlayGunFireSound();
             ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
 
-            Debug.DrawRay(muzzlePoint.transform.position, muzzlePoint.transform.forward, Color.red, 10f);
+            //Debug.DrawRay(muzzlePoint.transform.position, muzzlePoint.transform.forward, Color.red, 10f);
         }
         base.Fire();
     }

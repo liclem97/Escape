@@ -1,6 +1,4 @@
-using NUnit.Framework.Internal;
 using Photon.Pun;
-using Photon.Realtime;
 using System.Collections;
 using UnityEngine;
 
@@ -24,6 +22,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     [Header("Players (Runtime Assigned)")]
     [SerializeField] private GameObject player1;
     [SerializeField] private GameObject player2;
+
+    [Header("Item Spawner")]
+    [SerializeField] private ItemSpawner healPackItemSpawner;
 
     public GameObject GetPlayer1() => player1;
     public GameObject GetPlayer2() => player2;
@@ -49,16 +50,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             Debug.LogError("[GameManager] PhotonView 컴포넌트가 없습니다.");
         }
-
-        // cameraMoveManager가 없을 경우 자동으로 찾기 (예외 방지)
-        //if (cameraMoveManager == null)
-        //{
-        //    cameraMoveManager = FindFirstObjectByType<CameraMove>();
-        //    if (cameraMoveManager == null)
-        //    {
-        //        Debug.LogError("[GameManager] CameraMoveManager를 찾을 수 없습니다.");
-        //    }
-        //}
     }
 
     private void Start()
@@ -79,22 +70,26 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (player1 == null || player2 == null) return;
 
-        if (player1Stage1Point != null)
+        // 게임 시작 후 처음 포인트로 자동 이동
+        if (player1Stage1Point != null && player2Stage1Point != null)
         {
             CameraMove.Instance.StartCoroutine(CameraMove.Instance.MoveToPosition(player1, player1Stage1Point, 2f));
-        }
-
-        if (player2Stage1Point != null)
-        {
             CameraMove.Instance.StartCoroutine(CameraMove.Instance.MoveToPosition(CameraMove.Instance.Vehicle, player2Stage1Point, 2f));
-        }
+        }        
 
-        ItemTargetTrigger trigger = FindFirstObjectByType<ItemTargetTrigger>();
-        ItemSpawner itemSpawner = FindFirstObjectByType<ItemSpawner>();
-        if (trigger != null && itemSpawner)
+        // 아이템 스폰 시작 및 힐팩 목표 플레이어 지정
+        ItemTargetTrigger trigger = FindFirstObjectByType<ItemTargetTrigger>();        
+        if (trigger != null && healPackItemSpawner)
         {
             trigger.FlyTarget = player1.transform;
-            itemSpawner.ItemSpawnStart();
+            healPackItemSpawner.ItemSpawnStart();           
+        }
+
+        // 플레이어1 리볼버 탄창 스폰 시작
+        VRPlayer player = player1.GetComponent<VRPlayer>();
+        if (player != null)
+        {
+            player.StartAmmoSpawn();
         }
     }
 
@@ -151,8 +146,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                 if (actorNumber == 1 && player1 == null)
                 {
                     player1 = view.gameObject;
-                    //if (cameraMoveManager != null)
-                    //    cameraMoveManager.Player1 = player1;
 
                     // InitPlayer1 호출
                     VRPlayer vrPlayer = player1.GetComponent<VRPlayer>();

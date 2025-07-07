@@ -1,7 +1,6 @@
 using Photon.Pun;
-using Photon.Pun.Demo.PunBasics;
-using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Gun : MonoBehaviourPun
 {
@@ -28,6 +27,9 @@ public class Gun : MonoBehaviourPun
     [SerializeField] private float zoomFOV = 30f;
     [SerializeField] private float normalFOV = 60f;
     [SerializeField] private float zoomSpeed = 10f;
+
+    [Header("UI")]
+    [SerializeField] protected Text ammoText;
 
     private OVRCameraRig playerRig;
     private Camera eyeCamera;
@@ -117,6 +119,7 @@ public class Gun : MonoBehaviourPun
         InitializeAmmo();
         InitializeAudio();
         CacheMuzzleEffect();
+        UpdateAmmoText();
     }
 
     private void InitializeRayVisualizer()
@@ -159,7 +162,10 @@ public class Gun : MonoBehaviourPun
         lastAttackTime = Time.time;
 
         if (gunType != GunType.Pistol)
+        {
             currentAmmo--;
+            UpdateAmmoText();
+        }        
     }
 
     protected virtual void Fire()
@@ -199,5 +205,12 @@ public class Gun : MonoBehaviourPun
     public virtual void Reload()
     {
         if (gunType == GunType.Pistol) return;
+    }
+
+    protected void UpdateAmmoText()
+    {
+        if (!ammoText) return;
+
+        ammoText.text = $"{currentAmmo}/{maxAmmo}";
     }
 }

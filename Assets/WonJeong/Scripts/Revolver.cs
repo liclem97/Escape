@@ -12,25 +12,36 @@ public class Revolver : Gun
 
     protected override void Fire()
     {
+        if (currentAmmo <= 0) return;
+        Debug.Log("currentAmmo: " + currentAmmo);
+
         Ray ray = new Ray(muzzlePoint.transform.position, muzzlePoint.transform.forward);
+
         if (Physics.Raycast(ray, out RaycastHit hit, attackRange, HitRayMask))
         {
             EnemyBase zombie = hit.collider.GetComponentInParent<EnemyBase>();
+            int instigatorID = photonView.ViewID;   // ÃÑ ¼ÒÀ¯ÀÚÀÇ Æ÷Åæºä id
+
             // Çìµå¼¦
             if (hit.collider.CompareTag("Head") && zombie)
             {
-                //zombie.TakeDamage(gunDamage * 1.5f);
+                zombie.TakeDamage(gunDamage * 1.5f, instigatorID);
             }
             else if (hit.collider.TryGetComponent(out IDamageable damageable))
             {
-               // damageable.TakeDamage(gunDamage);
+                damageable.TakeDamage(gunDamage, instigatorID);
             }
 
             photonView.RPC(nameof(RPC_SpawnBulletFX), RpcTarget.All, hit.point, hit.normal, hit.collider.gameObject.layer);
             PlayGunFireSound();
             ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
+            Debug.Log("revolver fire");
 
-            Debug.DrawRay(muzzlePoint.transform.position, muzzlePoint.transform.forward, Color.red, 10f);
+            //Debug.DrawRay(muzzlePoint.transform.position, muzzlePoint.transform.forward, Color.red, 10f);
+        }
+        else
+        {
+            Debug.Log("ray not valid");
         }
         base.Fire();
     }
@@ -41,13 +52,10 @@ public class Revolver : Gun
         SpawnBulletFX(position, normal, hitLayer);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        
-    }
-
     public override void Reload()
     {
-        
-    }
+        currentAmmo = maxAmmo;
+        UpdateAmmoText();
+        // TODO: play reload sound;
+    }    
 }

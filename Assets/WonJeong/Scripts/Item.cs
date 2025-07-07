@@ -10,11 +10,11 @@ public class Item : MonoBehaviourPun
 
     private bool isHeld = false;
     private bool isInTargetTrigger = false;
-    private bool shouldUseItem = false;
+    protected bool shouldUseItem = false;
 
     private Transform holder = null;
     private Transform targetPlayer;
-    private int holdingPlayerViewID = -1;
+    protected int holdingPlayerViewID = -1;
 
     public bool IsHeld => isHeld;
 
@@ -148,18 +148,5 @@ public class Item : MonoBehaviourPun
     protected virtual void UseItem()
     {
         Destroy(gameObject);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        VRPlayer player = other.GetComponent<VRPlayer>();
-        if (player != null)
-        {
-            PhotonView playerView = player.GetComponent<PhotonView>();
-            if (playerView != null && playerView.ViewID != holdingPlayerViewID && shouldUseItem)
-            {
-                photonView.RPC(nameof(UseItem), RpcTarget.AllBuffered);
-            }
-        }
     }
 }

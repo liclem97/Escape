@@ -8,6 +8,7 @@ public class VRPlayer : MonoBehaviourPun
 
     [Header("Item")]
     [SerializeField] private float itemGrabDistance;
+    [SerializeField] private ItemSpawner ammoSpanwer;
 
     private Transform rightHand;
     private Transform leftHand;
@@ -36,7 +37,9 @@ public class VRPlayer : MonoBehaviourPun
             rightHand = rig.rightHandAnchor;
             leftHand = rig.leftHandAnchor;
             hmd = rig.centerEyeAnchor;
-        }      
+        }
+
+        //StartAmmoSpawn();
     }
 
     private void Update()
@@ -67,7 +70,8 @@ public class VRPlayer : MonoBehaviourPun
         // 총은 네트워크로 스폰
         if (photonView.IsMine && rightHand != null)
         {
-            GameObject gun = PhotonNetwork.Instantiate("Pistol", rightHand.position, rightHand.rotation);
+            GameObject gun = PhotonNetwork.Instantiate("Revolver", rightHand.position, rightHand.rotation);
+            //GameObject gun = PhotonNetwork.Instantiate("Pistol", rightHand.position, rightHand.rotation);
             photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, gun.GetComponent<PhotonView>().ViewID);
         }
     }
@@ -124,6 +128,14 @@ public class VRPlayer : MonoBehaviourPun
 
         heldItem.DetachFromHand(); // 직접 부모 해제
         heldItem = null;
+    }
+
+    public void StartAmmoSpawn()
+    {
+        if (ammoSpanwer != null)
+        {
+            ammoSpanwer.ItemSpawnStart();
+        }
     }
 
     private void OnDrawGizmos()
