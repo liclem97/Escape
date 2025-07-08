@@ -1127,6 +1127,8 @@ MonoBehaviour:
   attackCollider: {fileID: 0}
   throwCollider1: {fileID: 4192173781590795812}
   throwCollider2: {fileID: 7600922412332709769}
+  agent: {fileID: 107940002431183849}
+  obstacle: {fileID: 5366731570218407077}
 --- !u!208 &5366731570218407077
 NavMeshObstacle:
   m_ObjectHideFlags: 0

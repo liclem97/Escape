@@ -3206,8 +3206,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.0005549285, y: 0.99999595, z: -0.0023483662, w: 0.001552045}
   m_LocalPosition: {x: -0.08091706, y: -0.5035987, z: 1.855}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.18000002, y: 0.18000002, z: 0.18000002}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6038321969953387315}
   - {fileID: 7594858600239954283}
@@ -3363,6 +3363,8 @@ MonoBehaviour:
   attackCollider: {fileID: 7265469509285236867}
   throwCollider1: {fileID: 0}
   throwCollider2: {fileID: 0}
+  agent: {fileID: 1748067932332318150}
+  obstacle: {fileID: 3489418685556559415}
 --- !u!114 &2957233136293533045
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1612,7 +1612,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0.13704558, y: -0.519, z: 2.0644584}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3501080649972600878}
@@ -1827,6 +1827,8 @@ MonoBehaviour:
   attackCollider: {fileID: 6351280806436466044}
   throwCollider1: {fileID: 7643008040117703401}
   throwCollider2: {fileID: 2685248357480079535}
+  agent: {fileID: 8118182716046848539}
+  obstacle: {fileID: 4844905639592037627}
 --- !u!114 &3389542714909427402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1875,7 +1877,7 @@ NavMeshObstacle:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8977094957771674563}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Shape: 1
   m_Extents: {x: 0.5, y: 0.5, z: 0.5}
