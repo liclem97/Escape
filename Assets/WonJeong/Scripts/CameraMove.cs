@@ -2,20 +2,10 @@ using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
-[System.Serializable]
-public struct MoveStruct
-{
-    public Transform movePoint;
-    public float moveTime;
-}
-
 public class CameraMove : MonoBehaviourPun
 {
     public static CameraMove Instance { get; private set; }
     public enum PlayerType { Player1, Player2 }
-
-    [SerializeField] private MoveStruct[] movePointsPlayer1;
-    [SerializeField] private MoveStruct[] movePointsPlayer2;
 
     [SerializeField] private GameObject vehicle;
 

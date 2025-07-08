@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,7 @@ public class Gun : MonoBehaviourPun
 
     [Header("UI")]
     [SerializeField] protected Text ammoText;
+    [SerializeField] protected Image attackCooldownImage;
 
     [Header("Camera Zoom")]
     [SerializeField] protected float zoomFOV = 30f;
@@ -64,7 +66,9 @@ public class Gun : MonoBehaviourPun
         if (ARAVRInput.GetDown(ARAVRInput.Button.IndexTrigger, ARAVRInput.Controller.RTouch))
         {            
             TryFire();
-        }       
+        }
+
+        UpdateCooldownImage();
     }
 
     public void SetTargetHandAndRig(Transform hand, OVRCameraRig rig)
@@ -136,7 +140,12 @@ public class Gun : MonoBehaviourPun
         {
             currentAmmo--;
             UpdateAmmoText();
-        }        
+        }
+
+        if (attackCooldownImage != null)
+        {
+            attackCooldownImage.fillAmount = 0f;
+        }
     }
 
     protected virtual void Fire()
@@ -183,5 +192,13 @@ public class Gun : MonoBehaviourPun
         if (!ammoText) return;
 
         ammoText.text = $"{currentAmmo}/{maxAmmo}";
+    }
+
+    protected void UpdateCooldownImage()
+    {
+        if (attackCooldownImage == null || attackCooldownImage.fillAmount == 1f) return;
+
+        float elapsed = Time.time - lastAttackTime;
+        attackCooldownImage.fillAmount = Mathf.Clamp01(elapsed / gunAttackDelay);
     }
 }

@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public static GameManager Instance { get; private set; }
     public static VRPlayerHealth player1Health; // 플레이어1의 체력 참조
     public static float sharedHealthPercent = 1f;
+    public static bool isFadingIn = false;
 
     [Header("Spawn Points")]
     [SerializeField] private Transform player1SpawnPoint;
@@ -25,6 +26,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [Header("Item Spawner")]
     [SerializeField] private ItemSpawner healPackItemSpawner;
+
+    [Header("Game Over")]
+    [SerializeField] private Transform gameoverMovePoint;
 
     public GameObject GetPlayer1() => player1;
     public GameObject GetPlayer2() => player2;
@@ -59,9 +63,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (!isGameOver && player1Health != null && player1Health.currentHealth <= 0f)
+        if (!isGameOver && player1Health != null && sharedHealthPercent <= 0f)
         {
-            isGameOver = true;
             OnGameOver();
         }
     }
@@ -95,9 +98,73 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void OnGameOver()
     {
+        if (isGameOver) return;
+        isGameOver = true;
         Debug.Log("[GameManager] 게임 오버!");
-        // TODO: 씬 전환, UI 출력 등 추가
+
+        // 2.5초 후 이동 시작
+        StartCoroutine(DelayAndMovePlayers(2.5f));
+        DisableAllEnemyBases();
     }
+
+    private void DisableAllEnemyBases()
+    {
+        var enemyBases = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        foreach (var enemy in enemyBases)
+        {
+            enemy.gameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator DelayAndMovePlayers(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        float moveDuration = 1.5f;
+
+        if (player1 != null)
+        {
+            yield return StartCoroutine(MoveToGameOverPosition(player1.transform, gameoverMovePoint.position, gameoverMovePoint.rotation, moveDuration));
+        }
+
+        if (player2 != null)
+        {
+            yield return StartCoroutine(MoveToGameOverPosition(player2.transform, gameoverMovePoint.position, gameoverMovePoint.rotation, moveDuration));
+        }
+
+        TriggerFadeInAllPlayers();
+    }
+
+    private IEnumerator MoveToGameOverPosition(Transform target, Vector3 endPos, Quaternion endRot, float duration)
+    {
+        Vector3 startPos = target.position;
+        Quaternion startRot = target.rotation;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            target.position = Vector3.Lerp(startPos, endPos, t);
+            target.rotation = Quaternion.Slerp(startRot, endRot, t);
+            yield return null;
+        }
+
+        target.position = endPos;
+        target.rotation = endRot;
+
+        TriggerFadeInAllPlayers();
+    }
+
+    private void TriggerFadeInAllPlayers()
+    {
+        if (player1 != null && player2 != null)
+        {
+            isFadingIn = true;
+            //player1.GetComponentInChildren<HealthVignetteController>().TriggerFadeIn();
+        }
+    }
+
 
     public void OnPlayerJoinedRoom()
     {

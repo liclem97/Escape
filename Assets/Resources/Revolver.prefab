@@ -95,6 +95,7 @@ MonoBehaviour:
   livingHitEffect: {fileID: 49513035396359876, guid: e5073db2f4b27914097086d470a044d5, type: 3}
   gunFireSound: {fileID: 0}
   ammoText: {fileID: 5624538112133726185}
+  attackCooldownImage: {fileID: 8701413744333324427}
   zoomFOV: 30
   normalFOV: 60
   zoomSpeed: 10
@@ -502,6 +503,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 5158573031479026192, guid: 187aed4f4cfc3e14a9bbd8679add1050, type: 3}
+      propertyPath: m_Text
+      value: 0/6
+      objectReference: {fileID: 0}
     - target: {fileID: 5262119022215969515, guid: 187aed4f4cfc3e14a9bbd8679add1050, type: 3}
       propertyPath: m_Layer
       value: 10
@@ -576,6 +581,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8701413744333324427 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8167578062673108338, guid: 187aed4f4cfc3e14a9bbd8679add1050, type: 3}
+  m_PrefabInstance: {fileID: 691497481272811001}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3295892559956094435
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -586,15 +602,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 121722363553273428, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1036560271570292344, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1331082730273583883, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1331082730273583883, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_IsActive
@@ -648,6 +664,10 @@ PrefabInstance:
       propertyPath: HitRayMask.m_Bits
       value: 9088
       objectReference: {fileID: 0}
+    - target: {fileID: 2472708392277176286, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
+      propertyPath: m_UseWorldSpace
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2569224720342794698, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -678,7 +698,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6903968931419334616, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6903968931419334616, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_IsActive
@@ -686,7 +706,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7768120445289537023, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

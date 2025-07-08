@@ -4,7 +4,8 @@ using UnityEngine;
 public class VRPlayer : MonoBehaviourPun
 {
     [Header("Character Reference")]
-    [SerializeField] private Transform hmdFollowerSphere;
+    [SerializeField] private GameObject characterHead;
+    [SerializeField] private GameObject characterLeftHand;
 
     [Header("Item")]
     [SerializeField] private float itemGrabDistance;
@@ -16,6 +17,10 @@ public class VRPlayer : MonoBehaviourPun
     private OVRCameraRig rig;
 
     private Item heldItem = null;
+
+    private GameObject pistol;
+    private GameObject revolver;
+    private GameObject sniperRifle;
 
     private void Start()
     {
@@ -45,12 +50,23 @@ public class VRPlayer : MonoBehaviourPun
     private void Update()
     {
         if (!photonView.IsMine) return;
+        if (GameManager.Instance.IsGameOver)
+        {
+            photonView.RPC(nameof(HideAllMeshes), RpcTarget.AllBuffered);            
+            return;
+        }
 
         // HMD 위치를 Sphere에 반영
-        if (hmd != null && hmdFollowerSphere != null)
+        if (hmd != null && characterHead != null)
         {
-            hmdFollowerSphere.position = hmd.position;
-            hmdFollowerSphere.rotation = hmd.rotation;
+            characterHead.transform.position = hmd.position;
+            characterHead.transform.rotation = hmd.rotation;
+        }
+
+        if (leftHand != null && characterLeftHand != null)
+        {
+            characterLeftHand.transform.position = leftHand.position;
+            characterLeftHand.transform.rotation = leftHand.rotation;
         }
 
         // 왼손 핸드트리거를 눌렀을 때
@@ -63,6 +79,32 @@ public class VRPlayer : MonoBehaviourPun
         {
             TryDropItem();
         }
+
+        if (ARAVRInput.GetDown(ARAVRInput.Button.One, ARAVRInput.Controller.RTouch))
+        {
+            SwapWeapon();
+        }
+    }
+
+    [PunRPC]
+    private void SwapWeapon()
+    {
+        // 스나이퍼 라이플이 활성화 중인 경우 (2P)
+        if (sniperRifle != null && sniperRifle.activeSelf) return;
+
+        if (pistol != null && revolver != null)
+        {
+            if (pistol.activeSelf && !revolver.activeSelf)
+            {
+                pistol.SetActive(false);
+                revolver.SetActive(true);
+            }
+            else if (revolver.activeSelf && !pistol.activeSelf)
+            {
+                revolver.SetActive(false);
+                pistol.SetActive(true);
+            }
+        }
     }
 
     public void InitPlayer1()
@@ -70,10 +112,13 @@ public class VRPlayer : MonoBehaviourPun
         // 총은 네트워크로 스폰
         if (photonView.IsMine && rightHand != null)
         {
-            GameObject gun = PhotonNetwork.Instantiate("Revolver", rightHand.position, rightHand.rotation);
-            //GameObject gun = PhotonNetwork.Instantiate("Pistol", rightHand.position, rightHand.rotation);
+            revolver = PhotonNetwork.Instantiate("Revolver", rightHand.position, rightHand.rotation);
+            pistol = PhotonNetwork.Instantiate("Pistol", rightHand.position, rightHand.rotation);
             //GameObject gun = PhotonNetwork.Instantiate("SniperRifle", rightHand.position, rightHand.rotation);
-            photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, gun.GetComponent<PhotonView>().ViewID);
+            photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, revolver.GetComponent<PhotonView>().ViewID);
+            photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, pistol.GetComponent<PhotonView>().ViewID);
+
+            revolver.SetActive(false);
             StartAmmoSpawn();
         }
     }
@@ -83,8 +128,8 @@ public class VRPlayer : MonoBehaviourPun
         // 총은 네트워크로 스폰
         if (photonView.IsMine && rightHand != null)
         {
-            GameObject gun = PhotonNetwork.Instantiate("SniperRifle", rightHand.position, rightHand.rotation);
-            photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, gun.GetComponent<PhotonView>().ViewID);
+            sniperRifle = PhotonNetwork.Instantiate("SniperRifle", rightHand.position, rightHand.rotation);
+            photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, sniperRifle.GetComponent<PhotonView>().ViewID);
         }
     }
 
@@ -117,8 +162,14 @@ public class VRPlayer : MonoBehaviourPun
             Item item = col.GetComponent<Item>();
             if (item != null)
             {
-                heldItem = item;               
+                heldItem = item;
                 item.AttachToLeftHand(photonView.ViewID); // 내 ViewID만 넘김
+
+                if (characterLeftHand != null)
+                {
+                    characterLeftHand.SetActive(false);
+                }
+
                 break; // 첫 번째 아이템만 집음
             }
         }
@@ -130,6 +181,11 @@ public class VRPlayer : MonoBehaviourPun
 
         heldItem.DetachFromHand(); // 직접 부모 해제
         heldItem = null;
+
+        if (characterLeftHand != null)
+        {
+            characterLeftHand.SetActive(true);
+        }
     }
 
     public void StartAmmoSpawn()
@@ -140,35 +196,57 @@ public class VRPlayer : MonoBehaviourPun
         }
     }
 
+    [PunRPC]
+    private void HideAllMeshes()
+    {
+        if (characterLeftHand) characterLeftHand.SetActive(false);
+        if (characterHead) characterHead.SetActive(false);
+        if (pistol) pistol.SetActive(false);
+        if (revolver) revolver.SetActive(false);
+        if (sniperRifle) sniperRifle.SetActive(false);
+        if (ammoSpanwer)
+        {
+            ammoSpanwer.StopAllCoroutines();
+            if (ammoSpanwer.CurrentItem)
+            {
+                ammoSpanwer.CurrentItem.SetActive(false);
+            }            
+        }
+        if (TryGetComponent<Collider>(out Collider collider))
+        {
+            collider.enabled = false;
+        }
+    }
+
     private void OnDrawGizmos()
     {
-    //    if (rightHand == null || leftHand == null || hmd == null)
-    //    {
-    //        var rig = GetComponentInChildren<OVRCameraRig>();
-    //        if (rig != null)
-    //        {
-    //            rightHand = rig.rightHandAnchor;
-    //            leftHand = rig.leftHandAnchor;
-    //            hmd = rig.centerEyeAnchor;
-    //        }
-    //    }
+        //    if (rightHand == null || leftHand == null || hmd == null)
+        //    {
+        //        var rig = GetComponentInChildren<OVRCameraRig>();
+        //        if (rig != null)
+        //        {
+        //            rightHand = rig.rightHandAnchor;
+        //            leftHand = rig.leftHandAnchor;
+        //            hmd = rig.centerEyeAnchor;
+        //        }
+        //    }
 
-    //    if (rightHand != null)
-    //    {
-    //        Gizmos.color = Color.blue;
-    //        Gizmos.DrawSphere(rightHand.position, 0.05f);
-    //    }
+        //    if (rightHand != null)
+        //    {
+        //        Gizmos.color = Color.blue;
+        //        Gizmos.DrawSphere(rightHand.position, 0.05f);
+        //    }
 
-    //    if (leftHand != null)
-    //    {
-    //        Gizmos.color = Color.red;
-    //        Gizmos.DrawSphere(leftHand.position, itemGrabDistance);
-    //    }
+        //    if (leftHand != null)
+        //    {
+        //        Gizmos.color = Color.red;
+        //        Gizmos.DrawSphere(leftHand.position, itemGrabDistance);
+        //    }
 
-    //    if (hmd != null)
-    //    {
-    //        Gizmos.color = Color.yellow;
-    //        Gizmos.DrawSphere(hmd.position, 0.05f);
-    //    }
+        //    if (hmd != null)
+        //    {
+        //        Gizmos.color = Color.yellow;
+        //        Gizmos.DrawSphere(hmd.position, 0.05f);
+        //    }
     }
 }

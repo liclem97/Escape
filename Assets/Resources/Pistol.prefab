@@ -93,9 +93,12 @@ MonoBehaviour:
   environmentHitEffect: {fileID: 100002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
   livingHitEffect: {fileID: 49513035396359876, guid: e5073db2f4b27914097086d470a044d5, type: 3}
   gunFireSound: {fileID: 8300000, guid: f1fb1c5f73b74476a8044d93a7c2c6bd, type: 3}
+  ammoText: {fileID: 0}
+  attackCooldownImage: {fileID: 8823249260211644445}
   zoomFOV: 30
   normalFOV: 60
   zoomSpeed: 10
+  zoomOffset: 0.2
 --- !u!82 &4259188243431709261
 AudioSource:
   m_ObjectHideFlags: 0
@@ -398,6 +401,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 145285294422871605}
     m_Modifications:
+    - target: {fileID: 5678147166759971969, guid: 3b7df79c1a34ad746a8e182be27ccebc, type: 3}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7058907532658684102, guid: 3b7df79c1a34ad746a8e182be27ccebc, type: 3}
       propertyPath: m_Type
       value: 3
@@ -405,6 +412,10 @@ PrefabInstance:
     - target: {fileID: 7058907532658684102, guid: 3b7df79c1a34ad746a8e182be27ccebc, type: 3}
       propertyPath: m_FillAmount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7058907532658684102, guid: 3b7df79c1a34ad746a8e182be27ccebc, type: 3}
+      propertyPath: m_FillOrigin
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8349069358106333457, guid: 3b7df79c1a34ad746a8e182be27ccebc, type: 3}
       propertyPath: m_Name
@@ -465,6 +476,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9054970816976514194, guid: 3b7df79c1a34ad746a8e182be27ccebc, type: 3}
   m_PrefabInstance: {fileID: 1982777304607594715}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8823249260211644445 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7058907532658684102, guid: 3b7df79c1a34ad746a8e182be27ccebc, type: 3}
+  m_PrefabInstance: {fileID: 1982777304607594715}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3295892559956094435
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -473,6 +495,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 145285294422871605}
     m_Modifications:
+    - target: {fileID: 121722363553273428, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1036560271570292344, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1331082730273583883, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 1331082730273583883, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -525,6 +559,10 @@ PrefabInstance:
       propertyPath: HitRayMask.m_Bits
       value: 9088
       objectReference: {fileID: 0}
+    - target: {fileID: 2472708392277176286, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
+      propertyPath: m_UseWorldSpace
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2569224720342794698, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -554,8 +592,16 @@ PrefabInstance:
       value: RayVisualizer
       objectReference: {fileID: 0}
     - target: {fileID: 6903968931419334616, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6903968931419334616, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7768120445289537023, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

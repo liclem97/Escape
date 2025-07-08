@@ -32,6 +32,11 @@ public class RayVisualizer : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        On();
+    }
+
     public void On()
     {
         StopAllCoroutines();
@@ -58,6 +63,7 @@ public class RayVisualizer : MonoBehaviour
 
                 ReticlePoint.transform.position = HitInfo.point;
                 ReticlePoint.SetActive(ShowReticle); // 닿은 지점에 빨간 네모를 그림
+                ReticlePoint.transform.LookAt(transform.position);
             }
             else
             {
@@ -78,6 +84,9 @@ public class RayVisualizer : MonoBehaviour
 
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(Ray.GetPosition(1), 0.2f);
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(Ray.GetPosition(0), Ray.GetPosition(1));
         }
     }
 }

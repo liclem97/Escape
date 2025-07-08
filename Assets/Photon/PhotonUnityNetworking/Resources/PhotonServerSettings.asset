@@ -58,6 +58,9 @@ MonoBehaviour:
   - RPC_PlayExplosionEffect
   - MovePlayersToNextStage
   - ActivateVolume
+  - SwapWeapon
+  - RPC_TriggerFadeIn
+  - HideAllMeshes
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

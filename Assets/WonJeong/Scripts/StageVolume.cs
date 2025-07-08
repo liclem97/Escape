@@ -59,6 +59,7 @@ public class StageVolume : MonoBehaviourPun
     {
         while (true)
         {
+            if (GameManager.Instance.IsGameOver) yield break;
             yield return new WaitForSeconds(1f);
 
             bool anyAlive = false;

@@ -9,6 +9,11 @@ public class ItemSpawner : MonoBehaviourPun
     [SerializeField] private float itemSpawnDelay = 5f;
 
     private GameObject currentItem;
+    public GameObject CurrentItem
+    {
+        get => currentItem;
+        set => currentItem = value;
+    }
 
     public void ItemSpawnStart()
     {

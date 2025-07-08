@@ -8,16 +8,14 @@ public class VRPlayerHealth : MonoBehaviourPun, IDamageable
 
     [SerializeField] bool isInvincible = false; // 플레이어 무적 판별 여부
 
+    public bool IsInvincible => isInvincible;
+
     public float HealthPercent => currentHealth / maxHealth;
     public float MaxHealth => maxHealth;
 
     private void Awake()
     {
         currentHealth = maxHealth;
-    }
-    private void Start()
-    {
-
     }
 
     public void TakeDamage(float amount, int instigatorID)
@@ -36,7 +34,7 @@ public class VRPlayerHealth : MonoBehaviourPun, IDamageable
 
     public void RestoreHealth(float amount)
     {
-        if (isInvincible) return;
+        if (isInvincible || GameManager.Instance.IsGameOver) return;
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0f, maxHealth);
 

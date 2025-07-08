@@ -30,7 +30,6 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
 
     private void Start()
     {
-        //yield return new WaitUntil(() => PhotonNetwork.InRoom); // 방에 들어올 때까지 대기
         rigid = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
 
@@ -40,21 +39,10 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
         }
     }
 
-    private void Update()
+    [PunRPC]
+    protected void RPC_ChangeState(EnemyState state)
     {
-        //if (nextState != enemyState)
-        //{
-        //    StopCoroutine($"Co{enemyState}");
-        //    enemyState = nextState;
-        //    StartCoroutine($"Co{enemyState}");
-        //    Debug.LogWarning($"Enemy start: {enemyState}");
-        //}
-
-        //if (target)
-        //{
-        //    float distance = Vector3.Distance(transform.position, target.position);
-        //    Debug.Log($"[EnemyBase] Target Distance: {distance:F2}");
-        //}
+        ChangeState(state);
     }
 
     protected void ChangeState(EnemyState state)
@@ -74,15 +62,8 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
         }
     }
 
-    [PunRPC]
-    protected void RPC_ChangeState(EnemyState state)
-    {
-        ChangeState(state);
-    }
-
     protected IEnumerator CoIdle()
     {
-        //animator.SetTrigger("Idle");
         animator.SetFloat("Speed", 0f);
         yield return new WaitUntil(() => photonView.IsMine);
 
@@ -111,6 +92,15 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
 
         foreach (var hit in hits)
         {
+            // VRPlayerHealth 컴포넌트 확인
+            VRPlayerHealth health = hit.GetComponent<VRPlayerHealth>();
+            if (health != null && health.photonView != null)
+            {
+                // 무적 상태면 무시
+                if (health.enabled && health.GetType() == typeof(VRPlayerHealth) && health.IsInvincible)
+                    continue;
+            }
+
             float sqrDist = (hit.transform.position - transform.position).sqrMagnitude;
             if (sqrDist < closestDist)
             {
@@ -156,23 +146,24 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
     {
         while (target != null && GameManager.Instance != null && !GameManager.Instance.IsGameOver)
         {
-            // 공격 애니메이션 실행
-            animator.SetTrigger("Attack");
-            animator.SetFloat("Speed", 0f);
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+            // Attack 애니메이션 상태가 아닐 때만 트리거 발동
+            if (!stateInfo.IsName("Attack"))
+            {
+                Debug.Log("enemy Attack");
+                animator.SetTrigger("Attack");
+                animator.SetFloat("Speed", 0f);
+            }
+
             // 공격 딜레이 대기
             yield return new WaitForSeconds(attackDelay);
 
-            //// 공격 거리 밖으로 나가면 상태 변경
-            //float sqrDist = (target.position - transform.position).sqrMagnitude;
-            //if (sqrDist > attackRange * attackRange)
-            //{
-            //    photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Move);
-            //    yield break;
-            //}
-        }
-
-        // 타겟이 사라졌거나 게임이 끝난 경우
-        photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Idle);
+            if (target == null || GameManager.Instance.IsGameOver)
+            {
+                photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Idle);
+            }
+        }        
     }
 
     protected IEnumerator CoDie()
@@ -217,5 +208,8 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, humanSearchRadius);
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(transform.position, attackRange);
     }
 }
