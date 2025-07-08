@@ -1,14 +1,7 @@
 fileFormatVersion: 2
-guid: 7f774a6bdcb19b84b84cc8f47fad153e
+guid: 2ec5c5764b0b3ab48953e845030bd7a4
 PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 296216
-  packageName: Fat Zombie (Low Poly)
-  packageVersion: 1.0
-  assetPath: Assets/ArtStore3D/Fat Zombie(Low Poly)/Prefab/FatZombie.prefab
-  uploadId: 734237

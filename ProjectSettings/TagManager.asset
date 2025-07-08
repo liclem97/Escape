@@ -9,6 +9,7 @@ TagManager:
   - SamplesInfoPanel
   - Head
   - CinemachineTarget
+  - HitCancel
   layers:
   - Default
   - TransparentFX

@@ -1,7 +1,6 @@
 using Photon.Pun;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.XR;
 
 public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
 {
@@ -28,7 +27,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
     protected Rigidbody rigid;
     protected Animator animator;
 
-    private void Start()
+    protected virtual void Start()
     {
         rigid = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
@@ -142,7 +141,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
         photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Idle);
     }
 
-    protected IEnumerator CoAttack()
+    protected virtual IEnumerator CoAttack()
     {
         while (target != null && GameManager.Instance != null && !GameManager.Instance.IsGameOver)
         {
