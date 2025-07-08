@@ -1342,8 +1342,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7872722724625636223}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0033824737, y: 0.030278526, z: 0.18085088, w: 0.9830385}
-  m_LocalPosition: {x: 0.0011444092, y: 0.90367496, z: -0.02645874}
+  m_LocalRotation: {x: 0.0033824744, y: 0.030278526, z: 0.18085088, w: 0.9830385}
+  m_LocalPosition: {x: 0.0011453675, y: 0.90367526, z: -0.026457708}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1594,6 +1594,7 @@ GameObject:
   - component: {fileID: 6996072988874151106}
   - component: {fileID: 3389542714909427402}
   - component: {fileID: 6351280806436466044}
+  - component: {fileID: 4844905639592037627}
   m_Layer: 7
   m_Name: FatZombie
   m_TagString: Untagged
@@ -1611,7 +1612,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0.13704558, y: -0.519, z: 2.0644584}
-  m_LocalScale: {x: 0.18943626, y: 0.32132408, z: 0.1915747}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3501080649972600878}
@@ -1867,3 +1868,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 0.5}
   m_Center: {x: 0, y: 1, z: 0.5}
+--- !u!208 &4844905639592037627
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8977094957771674563}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5

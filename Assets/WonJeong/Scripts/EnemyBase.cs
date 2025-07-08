@@ -171,7 +171,11 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
         yield return new WaitUntil(() => photonView.IsMine);
 
         target = null;
-        rigid.velocity = Vector3.zero;
+        rigid.velocity = Vector3.zero;        
+        if (TryGetComponent<CapsuleCollider>(out var collider))
+        {
+            collider.enabled = false;
+        }
     }
 
     public void TakeDamage(float amount, int instigatorID)

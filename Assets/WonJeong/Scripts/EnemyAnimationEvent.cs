@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyAnimationEvent : MonoBehaviour
 {
     [SerializeField] private BoxCollider attackCollider;
     [SerializeField] private BoxCollider throwCollider1;
     [SerializeField] private BoxCollider throwCollider2;
+
+    [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private NavMeshObstacle obstacle;
 
     public void attackColliderOn()
     {
@@ -46,6 +50,24 @@ public class EnemyAnimationEvent : MonoBehaviour
         {
             throwCollider1.enabled = false;
             throwCollider2.enabled = false;
+        }
+    }
+
+    public void TurnOnAgentAndOffObstacles()
+    {
+        if (agent && obstacle)
+        {
+            agent.enabled = true;
+            obstacle.enabled = false;
+        }
+    }
+
+    public void TurnOffAgentAndOnObstacles()
+    {
+        if (agent && obstacle)
+        {
+            agent.enabled = false;
+            obstacle.enabled = true;
         }
     }
 }
