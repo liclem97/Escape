@@ -7,9 +7,15 @@ public class EnemyThrower : EnemyBase
     [Header("SpawnPoint")]
     [SerializeField] private Transform ballAttachPoint;
 
+    private GameObject ball;
+
+    [HideInInspector]
+    public float maxHealth;
+
     protected override void Start()
     {
         base.Start();
+        maxHealth = health;
     }
 
     protected override IEnumerator CoAttack()
@@ -41,11 +47,21 @@ public class EnemyThrower : EnemyBase
     {
         if (!photonView.IsMine) return;
 
-        GameObject ball = PhotonNetwork.Instantiate("ThrowBall", ballAttachPoint.position, ballAttachPoint.rotation);
+        ball = PhotonNetwork.Instantiate("ThrowBall", ballAttachPoint.position, ballAttachPoint.rotation);
         ball.transform.SetParent(ballAttachPoint); // 손에 붙임
+        if (ball.TryGetComponent<ThrowBall>(out var ballref))
+        {
+            ballref.ballDamage = attackDamage;
+        }        
+    }
 
-        // 필요시 공에게 던지는 방향이나 타겟 설정 가능
-        // 예: ball.GetComponent<ThrowBall>().SetTarget(target.position);
+    public void ThrowBall()
+    {
+        if (target != null)
+        {
+            Vector3 targetPos = target.position + Vector3.up * 1.5f; // 약간 위쪽을 조준
+            ball.GetComponent<ThrowBall>().photonView.RPC("ThrowToTarget", RpcTarget.All, targetPos);
+        }        
     }
 
     public void ThrowCancle()
@@ -54,5 +70,10 @@ public class EnemyThrower : EnemyBase
         if (!stateInfo.IsName("Throw")) return;
 
         animator.SetTrigger("Hit");
+
+        if (ball.TryGetComponent<ThrowBall>(out var ballref))
+        {
+            ballref.Explode();
+        }
     }
 }

@@ -1,7 +1,5 @@
 using Photon.Pun;
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.UIElements;
 
 public class Bomb : MonoBehaviourPun, IDamageable
 {
@@ -60,7 +58,7 @@ public class Bomb : MonoBehaviourPun, IDamageable
                     float damageRatio = Mathf.Clamp01(1f - distance / bombRange); // 가까울수록 1, 멀수록 0
                     float finalDamage = bombDamage * damageRatio;
 
-                    target.TakeDamage(finalDamage, 1);
+                    target.TakeDamage(finalDamage, 0);
                 }
             }
         }

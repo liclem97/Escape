@@ -12,25 +12,27 @@ public class Pistol : Gun
 
     protected override void Fire()
     {
+        ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
+
         Ray ray = new Ray(muzzlePoint.transform.position, muzzlePoint.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, attackRange, HitRayMask))
         {
             EnemyBase zombie = hit.collider.GetComponentInParent<EnemyBase>();
-            EnemyThrower thrower = zombie as EnemyThrower;
+            //EnemyThrower thrower = zombie as EnemyThrower;
             int instigatorID = photonView.ViewID;   // ÃÑ ¼ÒÀ¯ÀÚÀÇ Æ÷Åæºä id
 
             // Çìµå¼¦
             if (hit.collider.CompareTag("Head") && zombie)
             {
-                Debug.Log("HeadShot");
+                //Debug.Log("HeadShot");
                 zombie.TakeDamage(gunDamage * 1.5f, instigatorID);
             }
-            else if (hit.collider.CompareTag("HitCancel") && thrower)
-            {
-                Debug.Log("throw canceld");
-                thrower.ThrowCancle();
-                thrower.TakeDamage(gunDamage * 2f, instigatorID);
-            }
+            //else if (hit.collider.CompareTag("HitCancel") && thrower)
+            //{
+            //    Debug.Log("throw canceld");
+            //    thrower.ThrowCancle();                
+            //    thrower.TakeDamage(thrower.maxHealth * 0.4f, instigatorID);
+            //}
             else if (hit.collider.TryGetComponent(out IDamageable damageable))
             {
                 damageable.TakeDamage(gunDamage, instigatorID);              
@@ -38,7 +40,6 @@ public class Pistol : Gun
 
             photonView.RPC(nameof(RPC_SpawnBulletFX), RpcTarget.All, hit.point, hit.normal, hit.collider.gameObject.layer);
             PlayGunFireSound();
-            ARAVRInput.PlayVibration(ARAVRInput.Controller.RTouch);
 
             //Debug.DrawRay(muzzlePoint.transform.position, muzzlePoint.transform.forward, Color.red, 10f);
         }

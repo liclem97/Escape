@@ -1,7 +1,6 @@
 using Photon.Pun;
 using UnityEngine;
 
-
 public class SniperRifle : Gun
 {
     protected override void Start()
@@ -19,12 +18,19 @@ public class SniperRifle : Gun
         if (Physics.Raycast(ray, out RaycastHit hit, attackRange, HitRayMask))
         {
             EnemyBase zombie = hit.collider.GetComponentInParent<EnemyBase>();
+            EnemyThrower thrower = zombie as EnemyThrower;
             int instigatorID = photonView.ViewID;   // ÃÑ ¼ÒÀ¯ÀÚÀÇ Æ÷Åæºä id
 
             // Çìµå¼¦
             if (hit.collider.CompareTag("Head") && zombie)
             {
                 zombie.TakeDamage(gunDamage * 1.5f, instigatorID);
+            }
+            else if (hit.collider.CompareTag("HitCancel") && thrower)
+            {
+                Debug.Log("throw canceld");
+                thrower.ThrowCancle();
+                thrower.TakeDamage(thrower.maxHealth * 0.4f, instigatorID);
             }
             else if (hit.collider.TryGetComponent(out IDamageable damageable))
             {

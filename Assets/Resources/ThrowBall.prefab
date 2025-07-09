@@ -190,3 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   growDuration: 1
+  ballRange: 2
+  explosionEffect: {fileID: 1012567636198701762, guid: b173e9cd62ee5eb4f9576d4090ba8b15, type: 3}
+  explosionSound: {fileID: 0}
+  ballDamage: 30

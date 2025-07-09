@@ -61,6 +61,8 @@ MonoBehaviour:
   - SwapWeapon
   - RPC_TriggerFadeIn
   - HideAllMeshes
+  - ThrowToTarget
+  - SpawnExplodeFX
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
