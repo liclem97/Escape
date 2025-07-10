@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public static GameManager Instance { get; private set; }
     public static VRPlayerHealth player1Health; // 플레이어1의 체력 참조
     public static float sharedHealthPercent = 1f;
+    public static bool isFadingOut = false;
     public static bool isFadingIn = false;
 
     [Header("Spawn Points")]
@@ -27,16 +28,24 @@ public class GameManager : MonoBehaviourPunCallbacks
     [Header("Item Spawner")]
     [SerializeField] private ItemSpawner healPackItemSpawner;
 
-    [Header("Game Over")]
+    [Header("Move Points")]
     [SerializeField] private Transform gameoverMovePoint;
+    [SerializeField] private Transform gameclearMovePoint;
 
     public GameObject GetPlayer1() => player1;
     public GameObject GetPlayer2() => player2;
 
     private bool isGameOver = false;
+    private bool isGameClear = false;
+
     public bool IsGameOver
     {
         get => isGameOver;
+    }
+
+    public bool IsGameClear
+    {
+        get => isGameClear;
     }
 
     private void Awake()
@@ -65,6 +74,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (!isGameOver && player1Health != null && sharedHealthPercent <= 0f)
         {
+            isGameOver = true;
+            isFadingOut = true;
             OnGameOver();
         }
     }
@@ -98,13 +109,22 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void OnGameOver()
     {
-        if (isGameOver) return;
-        isGameOver = true;
         Debug.Log("[GameManager] 게임 오버!");
 
-        // 2.5초 후 이동 시작
-        StartCoroutine(DelayAndMovePlayers(2.5f));
+        // 게임오버 지점으로 이동 시작
+        StartCoroutine(DelayAndMovePlayers(2.5f, gameoverMovePoint));
+        DisableAllZombieSpawners();
         DisableAllEnemyBases();
+    }
+
+    private void OnGameClear()
+    {
+        Debug.Log("[GameManager] 게임 클리어!");
+
+        // 클리어 지점으로 이동 시작
+        DisableAllZombieSpawners();
+        KillAllZombies();
+        StartCoroutine(DelayAndMovePlayers(3f, gameclearMovePoint));        
     }
 
     private void DisableAllEnemyBases()
@@ -116,26 +136,55 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private IEnumerator DelayAndMovePlayers(float delay)
+    private void KillAllZombies()
     {
+        // 씬에 있는 모든 EnemyBase 컴포넌트를 가진 좀비를 찾음
+        EnemyBase[] zombies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);        
+
+        int myViewID = photonView.ViewID; // GameManager의 PhotonView ID
+
+        foreach (EnemyBase zombie in zombies)
+        {
+            // 죽은 좀비는 무시
+            if (zombie == null || zombie.gameObject == null) continue;
+
+            // 강제로 큰 데미지를 줌
+            zombie.TakeDamage(9999f, myViewID);
+        }
+
+        Debug.Log("[GameManager] 모든 좀비를 제거함");
+    }
+
+    private void DisableAllZombieSpawners()
+    {
+        ZombieSpawner[] zSpawners = FindObjectsByType<ZombieSpawner>(FindObjectsSortMode.None);
+        foreach (ZombieSpawner spawner in zSpawners)
+        {
+            spawner.enabled = false;
+        }
+    }
+
+    private IEnumerator DelayAndMovePlayers(float delay, Transform movePoint)
+    {
+        if (movePoint == null) yield break;
         yield return new WaitForSeconds(delay);
 
         float moveDuration = 1.5f;
 
         if (player1 != null)
         {
-            yield return StartCoroutine(MoveToGameOverPosition(player1.transform, gameoverMovePoint.position, gameoverMovePoint.rotation, moveDuration));
+            yield return StartCoroutine(MoveToPosition(player1.transform, movePoint.position, movePoint.rotation, moveDuration));
         }
 
         if (player2 != null)
         {
-            yield return StartCoroutine(MoveToGameOverPosition(player2.transform, gameoverMovePoint.position, gameoverMovePoint.rotation, moveDuration));
+            yield return StartCoroutine(MoveToPosition(player2.transform, movePoint.position, movePoint.rotation, moveDuration));
         }
 
         TriggerFadeInAllPlayers();
     }
 
-    private IEnumerator MoveToGameOverPosition(Transform target, Vector3 endPos, Quaternion endRot, float duration)
+    private IEnumerator MoveToPosition(Transform target, Vector3 endPos, Quaternion endRot, float duration)
     {
         Vector3 startPos = target.position;
         Quaternion startRot = target.rotation;
@@ -160,8 +209,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (player1 != null && player2 != null)
         {
-            isFadingIn = true;
-            //player1.GetComponentInChildren<HealthVignetteController>().TriggerFadeIn();
+            isFadingIn = true;            
         }
     }
 

@@ -29,7 +29,7 @@ public class SniperRifle : Gun
             else if (hit.collider.CompareTag("HitCancel") && thrower)
             {
                 Debug.Log("throw canceld");
-                thrower.ThrowCancle();
+                thrower.ThrowCancel();
                 thrower.TakeDamage(thrower.maxHealth * 0.4f, instigatorID);
             }
             else if (hit.collider.TryGetComponent(out IDamageable damageable))

@@ -5,7 +5,7 @@ using Photon.Pun;
 public class StageVolume : MonoBehaviourPun
 {
     [Header("Enemy Control")]
-    [SerializeField] private GameObject[] enemiesInVolume;
+    [SerializeField] protected GameObject[] enemiesInVolume;
 
     [Header("Shortcut Control")]
     [SerializeField] private GameObject shortcutGate;
@@ -18,26 +18,25 @@ public class StageVolume : MonoBehaviourPun
 
     [SerializeField] private float moveTime = 1f;
 
-    private bool isActivated = false;
+    protected bool isActivated = false;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         SetEnemiesActive(false);
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         if (isActivated) return;
 
         if (other.CompareTag("Player") && other.GetComponent<PhotonView>().IsMine)
         {
-            //ActivateVolume();
             photonView.RPC(nameof(ActivateVolume), RpcTarget.AllBuffered);
         }
     }
 
     [PunRPC]
-    private void ActivateVolume()
+    protected virtual void ActivateVolume()
     {
         if (isActivated) return;
 
@@ -46,7 +45,7 @@ public class StageVolume : MonoBehaviourPun
         StartCoroutine(CheckEnemiesAndTransition());
     }
 
-    private void SetEnemiesActive(bool active)
+    protected virtual void SetEnemiesActive(bool active)
     {
         foreach (var enemy in enemiesInVolume)
         {
@@ -60,12 +59,12 @@ public class StageVolume : MonoBehaviourPun
         while (true)
         {
             if (GameManager.Instance.IsGameOver) yield break;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
 
             bool anyAlive = false;
             foreach (var enemy in enemiesInVolume)
             {
-                if (enemy != null && enemy.activeInHierarchy)
+                if (enemy != null)
                 {
                     anyAlive = true;
                     break;
@@ -86,7 +85,6 @@ public class StageVolume : MonoBehaviourPun
         if (GameManager.Instance == null || CameraMove.Instance == null) return;
 
         GameObject player1 = GameManager.Instance.GetPlayer1();
-        //GameObject player2 = GameManager.Instance.GetPlayer2();
         GameObject player2 = CameraMove.Instance.Vehicle;
 
         bool useShortcut = (shortcutGate != null && !shortcutGate.activeInHierarchy);
@@ -108,8 +106,7 @@ public class StageVolume : MonoBehaviourPun
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        //BoxCollider boxCollider = GetComponent<BoxCollider>();
-        //Gizmos.DrawWireCube(boxCollider.transform.position, boxCollider.size);
-        Gizmos.DrawWireCube(transform.position, transform.localScale);
+        BoxCollider boxCollider = GetComponent<BoxCollider>();
+        Gizmos.DrawWireCube(boxCollider.transform.position, boxCollider.size);
     }
 }

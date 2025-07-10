@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 324622225882035141}
   - component: {fileID: 6906851822255736107}
   - component: {fileID: 3019218552783114140}
+  - component: {fileID: 3759875061165843885}
   m_Layer: 0
   m_Name: ThrowBall
   m_TagString: Untagged
@@ -31,13 +32,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 114464172919260628}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.26952094, y: -0.73728275, z: 0.20539065, w: 0.5844548}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.009999949, y: 0.009999991, z: 0.009999965}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.016132811, z: 0.015167919}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &3949238719242460517
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -45,7 +46,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 114464172919260628}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300004, guid: 98fc9a80f1406504aa6c2ea1d8d50f06, type: 3}
 --- !u!23 &7863813432399003449
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -68,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: a7e7f4253f6ef7f4792d6ccf1120f847, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,8 +110,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.7
+  m_Center: {x: 0, y: 0, z: 0.2}
 --- !u!114 &7153821767028303206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,6 +132,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 6906851822255736107}
+  - {fileID: 3759875061165843885}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -156,8 +158,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -174,7 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 0
+  m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!114 &3019218552783114140
@@ -194,3 +196,19 @@ MonoBehaviour:
   explosionEffect: {fileID: 1012567636198701762, guid: b173e9cd62ee5eb4f9576d4090ba8b15, type: 3}
   explosionSound: {fileID: 0}
   ballDamage: 30
+--- !u!114 &3759875061165843885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114464172919260628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 1
+  m_UseLocal: 1

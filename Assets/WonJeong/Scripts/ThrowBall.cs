@@ -15,7 +15,7 @@ public class ThrowBall : MonoBehaviourPun
     private AudioSource audioSource;
 
     private Vector3 startScale = Vector3.one * 0.001f;
-    private Vector3 targetScale = Vector3.one * 0.01f;
+    private Vector3 targetScale = Vector3.one * 0.02f;
 
     private bool isExploded = false;
 
@@ -23,7 +23,11 @@ public class ThrowBall : MonoBehaviourPun
 
     private void Start()
     {   
-        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();       
+    }
+
+    public void StartGrow()
+    {
         if (photonView.IsMine)
         {
             StartCoroutine(CoGrow());
@@ -57,7 +61,7 @@ public class ThrowBall : MonoBehaviourPun
         transform.SetParent(null); // 손에서 분리
 
         Vector3 direction = (targetPosition - transform.position).normalized;
-        float throwForce = 20f; // 힘의 세기
+        float throwForce = 15f; // 힘의 세기
 
         rb.isKinematic = false;
         rb.AddForce(direction * throwForce, ForceMode.VelocityChange);
@@ -83,7 +87,6 @@ public class ThrowBall : MonoBehaviourPun
                     Debug.Log($"target: {hit.name}");
 
                     target.TakeDamage(finalDamage, photonView.ViewID);
-                    //target.TakeDamage(ballDamage, photonView.ViewID);
                 }
             }
         }

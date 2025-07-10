@@ -26,10 +26,11 @@ public class EnemyThrower : EnemyBase
 
             // Attack 애니메이션 상태가 아닐 때만 트리거 발동
             if (!stateInfo.IsName("Throw"))
-            {                
-                animator.SetTrigger("Throw");
-                animator.SetFloat("Speed", 0f);
+            {
+                // 마스터만 실행, 모든 클라이언트에게 Throw 트리거 실행 요청
+                photonView.RPC(nameof(RPC_TriggerThrow), RpcTarget.All);
 
+                // 공 생성은 마스터만
                 SpawnThrowBall();
             }
 
@@ -43,16 +44,42 @@ public class EnemyThrower : EnemyBase
         }
     }
 
+    [PunRPC]
+    private void RPC_TriggerThrow()
+    {
+        animator.SetTrigger("Throw");
+        animator.SetFloat("Speed", 0f);
+    }
+
     public void SpawnThrowBall()
     {
         if (!photonView.IsMine) return;
 
         ball = PhotonNetwork.Instantiate("ThrowBall", ballAttachPoint.position, ballAttachPoint.rotation);
-        ball.transform.SetParent(ballAttachPoint); // 손에 붙임
+
         if (ball.TryGetComponent<ThrowBall>(out var ballref))
         {
             ballref.ballDamage = attackDamage;
-        }        
+        }
+
+        photonView.RPC(nameof(RPC_AttachBallToHand), RpcTarget.All, ball.GetComponent<PhotonView>().ViewID);
+    }
+
+    [PunRPC]
+    private void RPC_AttachBallToHand(int ballViewID)
+    {
+        GameObject obj = PhotonView.Find(ballViewID)?.gameObject;
+        if (obj != null)
+        {
+            obj.transform.SetParent(ballAttachPoint);
+            obj.transform.localPosition = Vector3.zero;
+            obj.transform.localRotation = Quaternion.identity;
+
+            if (obj.TryGetComponent<ThrowBall>(out var ballScript))
+            {
+                ballScript.StartGrow();
+            }
+        }
     }
 
     public void ThrowBall()
@@ -64,16 +91,22 @@ public class EnemyThrower : EnemyBase
         }        
     }
 
-    public void ThrowCancle()
+    [PunRPC]
+    private void RPC_TriggerThrowCancel()
     {
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (!stateInfo.IsName("Throw")) return;
-
         animator.SetTrigger("Hit");
 
         if (ball.TryGetComponent<ThrowBall>(out var ballref))
         {
             ballref.Explode();
         }
+    }
+
+    public void ThrowCancel()
+    {
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (!stateInfo.IsName("Throw")) return;
+
+        photonView.RPC(nameof(RPC_TriggerThrowCancel), RpcTarget.All);
     }
 }

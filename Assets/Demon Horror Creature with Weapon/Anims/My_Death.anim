@@ -64040,7 +64040,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 7.32
-    functionName: SetActivateFalseEnemy
+    functionName: DestoryEnemy
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

@@ -1,8 +1,9 @@
 using Photon.Pun;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
+public class EnemyBase : MonoBehaviourPun, IDamageable
 {
     protected enum EnemyState 
     {
@@ -24,17 +25,63 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
     [SerializeField] protected float health = 100f;
 
     protected EnemyState nextState;
-    protected Rigidbody rigid;
+    //protected Rigidbody rigid;
     protected Animator animator;
+    protected NavMeshAgent agent;
 
     protected virtual void Start()
     {
-        rigid = GetComponent<Rigidbody>();
+        //rigid = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
+
+        AdjustPositionToGround();
+
+        agent.updateRotation = false; // 수평 회전만 수동으로
+        agent.updateUpAxis = false;   // Y축 자동 조절 끄기
+        agent.speed = moveSpeed;
 
         if (photonView.IsMine)
         {
             ChangeState(EnemyState.Idle);
+        }
+    }
+
+    private void OnEnable()
+    {
+        AdjustPositionToGround();
+
+        if (agent == null)
+            agent = GetComponent<NavMeshAgent>();
+
+        agent.updateRotation = false; // 수평 회전만 수동으로
+        agent.updateUpAxis = false;   // Y축 자동 조절 끄기
+        agent.speed = moveSpeed;
+    }
+
+    private void Update()
+    {
+        if (target != null)
+        {
+            Vector3 lookPos = target.position;
+            lookPos.y = transform.position.y; // Y축은 현재 높이로 고정
+            transform.LookAt(lookPos);
+        }
+    }
+
+    void AdjustPositionToGround()
+    {
+        if (TryGetComponent<CapsuleCollider>(out CapsuleCollider col))
+        {
+            float height = col.height;
+            float centerY = col.center.y;
+            float bottomOffset = (height / 2f) - centerY;
+
+            transform.position = new Vector3(
+                transform.position.x,
+                transform.position.y + bottomOffset,
+                transform.position.z
+            );
         }
     }
 
@@ -66,7 +113,8 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
         animator.SetFloat("Speed", 0f);
         yield return new WaitUntil(() => photonView.IsMine);
 
-        rigid.velocity = Vector3.zero;
+        //rigid.velocity = Vector3.zero;
+        agent.isStopped = true;
         ChangeState(EnemyState.Search);
     }
 
@@ -112,32 +160,33 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
     }
 
     protected IEnumerator CoMove()
-    {        
+    {
         yield return new WaitUntil(() => photonView.IsMine);
 
         while (target != null && GameManager.Instance != null && !GameManager.Instance.IsGameOver)
         {
-            var dir = target.position - transform.position;
-            dir.y = 0f;
-            float distToTarget = dir.sqrMagnitude;
+            float distToTarget = (target.position - transform.position).sqrMagnitude;
 
-            // 공격 거리 이내라면 공격 상태로 전환
             if (distToTarget <= attackRange * attackRange)
             {
-                rigid.velocity = Vector3.zero; // 멈춤
+                agent.isStopped = true;
                 photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Attack);
-                yield break; // 코루틴 종료
+                yield break;
             }
 
-            var velocity = moveSpeed * dir.normalized;
-            velocity.y = rigid.velocity.y;
-            rigid.velocity = velocity;
+            agent.isStopped = false;
+            agent.SetDestination(target.position);
 
-            transform.forward = dir.normalized;
-            animator.SetFloat("Speed", velocity.magnitude);
+            // 수평 회전만 적용
+            Vector3 lookTarget = target.position;
+            lookTarget.y = transform.position.y;
+            transform.LookAt(lookTarget);
+
+            animator.SetFloat("Speed", agent.velocity.magnitude);
             yield return null;
         }
 
+        agent.isStopped = true;
         photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Idle);
     }
 
@@ -150,9 +199,9 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
             // Attack 애니메이션 상태가 아닐 때만 트리거 발동
             if (!stateInfo.IsName("Attack"))
             {
-                Debug.Log("enemy Attack");
-                animator.SetTrigger("Attack");
-                animator.SetFloat("Speed", 0f);
+                photonView.RPC(nameof(RPC_TriggerAttack), RpcTarget.All);
+                //animator.SetTrigger("Attack");
+                //animator.SetFloat("Speed", 0f);
             }
 
             // 공격 딜레이 대기
@@ -165,13 +214,21 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IDamageable
         }        
     }
 
+    [PunRPC]
+    private void RPC_TriggerAttack()
+    {
+        animator.SetTrigger("Attack");
+        animator.SetFloat("Speed", 0f);
+    }
+
     protected IEnumerator CoDie()
     {
         animator.SetTrigger("Die");
         yield return new WaitUntil(() => photonView.IsMine);
 
         target = null;
-        rigid.velocity = Vector3.zero;        
+        //rigid.velocity = Vector3.zero;        
+        agent.isStopped = true;
         if (TryGetComponent<CapsuleCollider>(out var collider))
         {
             collider.enabled = false;

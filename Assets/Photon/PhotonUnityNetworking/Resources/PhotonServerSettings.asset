@@ -63,6 +63,10 @@ MonoBehaviour:
   - HideAllMeshes
   - ThrowToTarget
   - SpawnExplodeFX
+  - RPC_TriggerThrow
+  - RPC_AttachBallToHand
+  - RPC_TriggerThrowCancel
+  - RPC_TriggerAttack
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

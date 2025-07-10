@@ -28,9 +28,9 @@ public class EnemyAnimationEvent : MonoBehaviour
         }
     }
 
-    public void SetActivateFalseEnemy()
+    public void DestoryEnemy()
     {
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
     public void throwColliderOn()
@@ -57,8 +57,8 @@ public class EnemyAnimationEvent : MonoBehaviour
     {
         if (agent && obstacle)
         {
-            agent.enabled = true;
             obstacle.enabled = false;
+            agent.enabled = true;            
         }
     }
 
