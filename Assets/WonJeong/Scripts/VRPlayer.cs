@@ -66,7 +66,9 @@ public class VRPlayer : MonoBehaviourPun
         if (leftHand != null && characterLeftHand != null)
         {
             characterLeftHand.transform.position = leftHand.position;
-            characterLeftHand.transform.rotation = leftHand.rotation;
+            
+            Quaternion offsetRotation = Quaternion.Euler(0f, 0f, 0f);
+            characterLeftHand.transform.rotation = leftHand.rotation * offsetRotation;
         }
 
         // 왼손 핸드트리거를 눌렀을 때

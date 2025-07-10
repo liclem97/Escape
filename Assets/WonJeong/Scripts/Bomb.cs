@@ -31,11 +31,6 @@ public class Bomb : MonoBehaviourPun, IDamageable
 
         currentHP -= amount;
 
-     //   if (currentHP <= bombHP * 0.5f && !bombSmokeEffect.isPlaying)
-        {
-       //     bombSmokeEffect.Play(); // ºÒ²É ÀÌÆåÆ® Àç»ý
-        }
-
         if (currentHP <= 0f)
         {
             Explode();

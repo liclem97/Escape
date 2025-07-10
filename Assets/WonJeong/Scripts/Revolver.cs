@@ -29,7 +29,14 @@ public class Revolver : Gun
             }
             else if (hit.collider.TryGetComponent(out IDamageable damageable))
             {
-                damageable.TakeDamage(gunDamage, instigatorID);
+                if (hit.collider.TryGetComponent(out DestructibleObject dest))
+                {
+                    // ÃÑÀ¸·Ð destructibleObject¸¦ ÆÄ±«ÇÒ ¼ö ¾øÀ½
+                }
+                else
+                {
+                    damageable.TakeDamage(gunDamage, instigatorID);
+                }
             }
 
             photonView.RPC(nameof(RPC_SpawnBulletFX), RpcTarget.All, hit.point, hit.normal, hit.collider.gameObject.layer);

@@ -3,12 +3,16 @@ using UnityEngine.AI;
 
 public class EnemyAnimationEvent : MonoBehaviour
 {
+    [Header("Colliders")]
     [SerializeField] private BoxCollider attackCollider;
     [SerializeField] private BoxCollider throwCollider1;
     [SerializeField] private BoxCollider throwCollider2;
 
-    [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private NavMeshObstacle obstacle;
+    [Header("Sounds")]
+    [SerializeField] private AudioClip idleSound;
+    [SerializeField] private AudioClip attackSound;
+    [SerializeField] private AudioClip dieSound;
+    [SerializeField] private AudioClip hitSound;
 
     public void attackColliderOn()
     {
@@ -53,21 +57,35 @@ public class EnemyAnimationEvent : MonoBehaviour
         }
     }
 
-    public void TurnOnAgentAndOffObstacles()
+    public void PlayIdleSound()
     {
-        if (agent && obstacle)
+        if (TryGetComponent<AudioSource>(out AudioSource audioSource) && idleSound)
         {
-            obstacle.enabled = false;
-            agent.enabled = true;            
+            audioSource.PlayOneShot(idleSound);
         }
     }
 
-    public void TurnOffAgentAndOnObstacles()
+    public void PlayAttackSound()
     {
-        if (agent && obstacle)
+        if (TryGetComponent<AudioSource>(out AudioSource audioSource) && attackSound)
         {
-            agent.enabled = false;
-            obstacle.enabled = true;
+            audioSource.PlayOneShot(attackSound);
+        }
+    }
+
+    public void PlayDieSound()
+    {
+        if (TryGetComponent<AudioSource>(out AudioSource audioSource) && dieSound)
+        {
+            audioSource.PlayOneShot(dieSound);
+        }
+    }
+
+    public void PlayHitSound()
+    {
+        if (TryGetComponent<AudioSource>(out AudioSource audioSource) && hitSound)
+        {
+            audioSource.PlayOneShot(hitSound);
         }
     }
 }

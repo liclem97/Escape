@@ -24,15 +24,11 @@ public class EnemyThrower : EnemyBase
         {
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-            // Attack 애니메이션 상태가 아닐 때만 트리거 발동
-            if (!stateInfo.IsName("Throw"))
-            {
-                // 마스터만 실행, 모든 클라이언트에게 Throw 트리거 실행 요청
-                photonView.RPC(nameof(RPC_TriggerThrow), RpcTarget.All);
+            // 마스터만 실행, 모든 클라이언트에게 Throw 트리거 실행 요청
+            photonView.RPC(nameof(RPC_TriggerThrow), RpcTarget.All);
 
-                // 공 생성은 마스터만
-                SpawnThrowBall();
-            }
+            // 공 생성은 마스터만
+            SpawnThrowBall();
 
             // 공격 딜레이 대기
             yield return new WaitForSeconds(attackDelay);
@@ -96,7 +92,7 @@ public class EnemyThrower : EnemyBase
     {
         animator.SetTrigger("Hit");
 
-        if (ball.TryGetComponent<ThrowBall>(out var ballref))
+        if (ball && ball.TryGetComponent<ThrowBall>(out var ballref))
         {
             ballref.Explode();
         }

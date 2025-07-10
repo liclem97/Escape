@@ -6,6 +6,9 @@ public class Item : MonoBehaviourPun
 {
     [SerializeField] protected float autoUseTimer = 1.5f; // 자동 사용 딜레이
 
+    [Header("Sounds")]
+    [SerializeField] protected AudioClip itemUseSound;
+
     private ItemSpawner itemSpawner;
 
     private bool isHeld = false;
@@ -14,6 +17,8 @@ public class Item : MonoBehaviourPun
 
     private Transform holder = null;
     private Transform targetPlayer;
+
+    protected AudioSource audioSource;
     protected int holdingPlayerViewID = -1;
 
     public bool IsHeld => isHeld;
@@ -22,6 +27,11 @@ public class Item : MonoBehaviourPun
     {
         get => itemSpawner;
         set => itemSpawner = value;
+    }
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void AttachToLeftHand(int playerViewID)
@@ -147,6 +157,8 @@ public class Item : MonoBehaviourPun
     [PunRPC]
     protected virtual void UseItem()
     {
-        Destroy(gameObject);
+        transform.localScale = Vector3.zero;
+        audioSource.PlayOneShot(itemUseSound);
+        Destroy(gameObject, 3f);
     }
 }

@@ -92,7 +92,7 @@ MonoBehaviour:
   muzzleFlashEffect: {fileID: 6790273351997099994}
   environmentHitEffect: {fileID: 100002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
   livingHitEffect: {fileID: 49513035396359876, guid: e5073db2f4b27914097086d470a044d5, type: 3}
-  gunFireSound: {fileID: 8300000, guid: f1fb1c5f73b74476a8044d93a7c2c6bd, type: 3}
+  gunFireSound: {fileID: 8300000, guid: 6444bca09a3413246b682182809450d0, type: 3}
   ammoText: {fileID: 0}
   attackCooldownImage: {fileID: 8823249260211644445}
   zoomFOV: 30
@@ -557,7 +557,7 @@ PrefabInstance:
       objectReference: {fileID: 5310139647055161556}
     - target: {fileID: 2369246976620967767, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: HitRayMask.m_Bits
-      value: 9088
+      value: 9089
       objectReference: {fileID: 0}
     - target: {fileID: 2472708392277176286, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_UseWorldSpace

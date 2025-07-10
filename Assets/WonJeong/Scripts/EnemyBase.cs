@@ -200,8 +200,6 @@ public class EnemyBase : MonoBehaviourPun, IDamageable
             if (!stateInfo.IsName("Attack"))
             {
                 photonView.RPC(nameof(RPC_TriggerAttack), RpcTarget.All);
-                //animator.SetTrigger("Attack");
-                //animator.SetFloat("Speed", 0f);
             }
 
             // 공격 딜레이 대기
@@ -223,11 +221,12 @@ public class EnemyBase : MonoBehaviourPun, IDamageable
 
     protected IEnumerator CoDie()
     {
+        animator.SetBool("bDied", true);
         animator.SetTrigger("Die");
         yield return new WaitUntil(() => photonView.IsMine);
 
         target = null;
-        //rigid.velocity = Vector3.zero;        
+     
         agent.isStopped = true;
         if (TryGetComponent<CapsuleCollider>(out var collider))
         {

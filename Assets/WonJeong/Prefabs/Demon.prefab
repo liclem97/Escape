@@ -861,9 +861,6 @@ PrefabInstance:
       addedObject: {fileID: 1852336541490694154}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c3d73ba06daaeef40b556c623d33fc02, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2371204012009786390}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c3d73ba06daaeef40b556c623d33fc02, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 372974548814859631}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c3d73ba06daaeef40b556c623d33fc02, type: 3}
       insertIndex: -1
@@ -967,33 +964,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!54 &2371204012009786390
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4450017723812017620}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 84
-  m_CollisionDetection: 0
 --- !u!114 &372974548814859631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1024,6 +994,9 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 1
     Name: Die
+  - Type: 4
+    SynchronizeType: 0
+    Name: bDied
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0
@@ -1044,7 +1017,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 1
   m_Height: 5
@@ -1109,8 +1082,10 @@ MonoBehaviour:
   attackCollider: {fileID: 0}
   throwCollider1: {fileID: 4192173781590795812}
   throwCollider2: {fileID: 7600922412332709769}
-  agent: {fileID: 107940002431183849}
-  obstacle: {fileID: 0}
+  idleSound: {fileID: 8300000, guid: 3b9cb6c5572ef5e4e9a30c6bc8ba4432, type: 3}
+  attackSound: {fileID: 0}
+  dieSound: {fileID: 0}
+  hitSound: {fileID: 0}
 --- !u!114 &1165325558172845684
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -95,6 +95,12 @@ public class ThrowBall : MonoBehaviourPun
         photonView.RPC(nameof(SpawnExplodeFX), RpcTarget.All);
 
         // 일정 시간 후 제거
+        photonView.RPC(nameof(RPC_DestroySelf), RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void RPC_DestroySelf()
+    {
         Destroy(gameObject, 0.01f);
     }
 

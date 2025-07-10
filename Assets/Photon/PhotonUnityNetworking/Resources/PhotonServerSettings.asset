@@ -67,6 +67,8 @@ MonoBehaviour:
   - RPC_AttachBallToHand
   - RPC_TriggerThrowCancel
   - RPC_TriggerAttack
+  - RPC_DestroySelf
+  - RPC_DestroyObject
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

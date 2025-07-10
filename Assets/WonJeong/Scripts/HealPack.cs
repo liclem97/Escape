@@ -29,7 +29,7 @@ public class HealPack : Item
             float healAmount = GameManager.player1Health.MaxHealth - GameManager.player1Health.currentHealth;
             GameManager.player1Health.RestoreHealth(healAmount);
 
-            Debug.Log($"Use HealPack Item, healAmount: {healAmount}");
+            //Debug.Log($"Use HealPack Item, healAmount: {healAmount}");
         }
         base.UseItem(); // Destroy
     }

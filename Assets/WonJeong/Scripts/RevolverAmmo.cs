@@ -24,6 +24,7 @@ public class RevolverAmmo : Item
     [PunRPC]
     protected override void UseItem()
     {
+        DetachFromHand();
         base.UseItem(); // Destroy
     }
 
