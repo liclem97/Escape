@@ -86,8 +86,8 @@ MonoBehaviour:
   HitRayMask:
     serializedVersion: 2
     m_Bits: 9088
-  gunDamage: 20
-  gunAttackDelay: 0.2
+  gunDamage: 50
+  gunAttackDelay: 0.5
   maxAmmo: 6
   attackRange: 100
   muzzleFlashEffect: {fileID: 5048848354315384715}

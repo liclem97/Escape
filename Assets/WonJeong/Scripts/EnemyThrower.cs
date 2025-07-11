@@ -1,4 +1,4 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
@@ -24,13 +24,13 @@ public class EnemyThrower : EnemyBase
         {
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-            // ¸¶½ºÅÍ¸¸ ½ÇÇà, ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô Throw Æ®¸®°Å ½ÇÇà ¿äÃ»
+            // ë§ˆìŠ¤í„°ë§Œ ì‹¤í–‰, ëª¨ë“  í´ë¼ì´ì–¸íŠ¸ì—ê²Œ Throw íŠ¸ë¦¬ê±° ì‹¤í–‰ ìš”ì²­
             photonView.RPC(nameof(RPC_TriggerThrow), RpcTarget.All);
 
-            // °ø »ı¼ºÀº ¸¶½ºÅÍ¸¸
+            // ê³µ ìƒì„±ì€ ë§ˆìŠ¤í„°ë§Œ
             SpawnThrowBall();
 
-            // °ø°İ µô·¹ÀÌ ´ë±â
+            // ê³µê²© ë”œë ˆì´ ëŒ€ê¸°
             yield return new WaitForSeconds(attackDelay);
 
             if (target == null || GameManager.Instance.IsGameOver)
@@ -82,7 +82,7 @@ public class EnemyThrower : EnemyBase
     {
         if (target != null && gameObject)
         {
-            Vector3 targetPos = target.position + Vector3.up * 1.5f; // ¾à°£ À§ÂÊÀ» Á¶ÁØ
+            Vector3 targetPos = target.position + Vector3.up * 1.2f; // ì•½ê°„ ìœ„ìª½ì„ ì¡°ì¤€
             ball.GetComponent<ThrowBall>().photonView.RPC("ThrowToTarget", RpcTarget.All, targetPos);
         }        
     }

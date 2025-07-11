@@ -1677,13 +1677,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  moveSpeed: 1
+  moveSpeed: 1.5
   enemyState: 0
-  humanSearchRadius: 50
+  humanSearchRadius: 100
   attackRange: 2.7
-  attackDamage: 1
-  attackDelay: 3
-  health: 50
+  attackDamage: 30
+  attackDelay: 5
+  health: 200
 --- !u!114 &6996072988874151106
 MonoBehaviour:
   m_ObjectHideFlags: 0

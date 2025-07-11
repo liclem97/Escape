@@ -1058,12 +1058,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  moveSpeed: 3
+  moveSpeed: 2
   enemyState: 0
-  humanSearchRadius: 20
-  attackRange: 15
-  attackDamage: 10
-  attackDelay: 5
+  humanSearchRadius: 50
+  attackRange: 20
+  attackDamage: 40
+  attackDelay: 6
   health: 500
   ballAttachPoint: {fileID: 6729810452347710949}
   maxHealth: 0

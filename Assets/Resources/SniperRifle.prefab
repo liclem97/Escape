@@ -177,7 +177,7 @@ MonoBehaviour:
   HitRayMask:
     serializedVersion: 2
     m_Bits: 9088
-  gunDamage: 60
+  gunDamage: 30
   gunAttackDelay: 2
   maxAmmo: 5
   attackRange: 1000

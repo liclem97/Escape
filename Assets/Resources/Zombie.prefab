@@ -3291,12 +3291,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  moveSpeed: 1
+  moveSpeed: 2
   enemyState: 0
   humanSearchRadius: 50
   attackRange: 2.5
-  attackDamage: 1
-  attackDelay: 3
+  attackDamage: 10
+  attackDelay: 5
   health: 30
 --- !u!114 &1664778566141739265
 MonoBehaviour:
