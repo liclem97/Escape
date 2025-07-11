@@ -6701,6 +6701,7 @@ Transform:
   - {fileID: 139782953}
   - {fileID: 1361051588}
   - {fileID: 1216177703}
+  - {fileID: 684410978}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &216460794
@@ -24861,6 +24862,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4000011072209702, guid: b2be9b4ffc291194c96942bd60bdc25c, type: 3}
   m_PrefabInstance: {fileID: 684336137}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &684410977
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 684410978}
+  - component: {fileID: 684410979}
+  m_Layer: 0
+  m_Name: BGMManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &684410978
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684410977}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 214069014}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &684410979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684410977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9545b39d41acc7145bc86d38459c6971, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeDuration: 1.5
 --- !u!1001 &684567988
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -50077,6 +50123,8 @@ MonoBehaviour:
   beforeStartUI_Text: {fileID: 90801893}
   gameOverUI: {fileID: 115828438}
   gameClearUI: {fileID: 1470614798}
+  gamePlayBGM: {fileID: 8300000, guid: acecddeef216b6d42a2694ff5c47423a, type: 3}
+  bossBGM: {fileID: 8300000, guid: 4b594b11057c456479730f43ec4249f8, type: 3}
 --- !u!1001 &1362705492
 PrefabInstance:
   m_ObjectHideFlags: 0

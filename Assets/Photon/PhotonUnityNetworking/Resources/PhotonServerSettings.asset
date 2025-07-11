@@ -77,6 +77,8 @@ MonoBehaviour:
   - RPC_TriggerGameExit
   - RPC_SetActiveGameUI
   - RPC_ShowBeforeStartText
+  - RPC_SetActiveGameClearUI
+  - RPC_SetActiveGameOverUI
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

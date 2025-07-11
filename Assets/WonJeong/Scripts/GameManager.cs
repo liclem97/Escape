@@ -36,12 +36,15 @@ public class GameManager : MonoBehaviourPunCallbacks
     [Header("Game information UI")]
     [SerializeField] private GameObject beforeStartUI;
     [SerializeField] private Text beforeStartUI_Text;
-
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private GameObject gameClearUI;
 
+    [Header("Sound")]
+    [SerializeField] private AudioClip gamePlayBGM;
+    [SerializeField] private AudioClip bossBGM;
+
     public GameObject GetPlayer1() => player1;
-    public GameObject GetPlayer2() => player2;
+    public GameObject GetPlayer2() => player2;    
 
     private bool isGameOver = false;
     private bool isGameClear = false;
@@ -76,11 +79,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         Debug.Log($"VRPlayer Start() - IsMine: {photonView.IsMine}");
-        if (gameOverUI && gameClearUI && gameOverUI.activeInHierarchy && gameClearUI.activeInHierarchy)
-        {
-            gameOverUI.SetActive(false);
-            gameClearUI.SetActive(false);
-        }
+        if (gameOverUI) gameOverUI.SetActive(false);
+        if (gameClearUI) gameClearUI.SetActive(false);
     }
 
     private void Update()
@@ -120,6 +120,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             player.StartAmmoSpawn();
         }
+
+        if (BGMPlayer.Instance != null && gamePlayBGM != null)
+        {
+            BGMPlayer.Instance.PlayBGM(gamePlayBGM);
+        }
     }
 
     [PunRPC]
@@ -130,19 +135,15 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void RPC_SetActiveGameUI(GameObject uiToActive)
+    private void RPC_SetActiveGameClearUI()
     {
-        Debug.Log("rpc_SetActivateGameUI 호출");
-        if (uiToActive != null)
-        {
-            Debug.Log("UI 활성화 됨");
-            Debug.Log($"uiToActive: {uiToActive.name}");
-            uiToActive.SetActive(true);
-        }
-        else
-        {
-            Debug.Log("uiToActive가 null인 상태");
-        }
+        if (gameClearUI) gameClearUI.SetActive(true);
+    }
+
+    [PunRPC]
+    private void RPC_SetActiveGameOverUI()
+    {
+        if (gameOverUI) gameOverUI.SetActive(true);
     }
 
     private void OnGameOver()
@@ -155,7 +156,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         DisableAllZombieSpawners();
         DisableAllEnemyBases();
 
-        photonView.RPC(nameof(RPC_SetActiveGameUI), RpcTarget.AllBuffered, gameOverUI);
+        Debug.Log("gameover rpc 호출");
+        photonView.RPC(nameof(RPC_SetActiveGameOverUI), RpcTarget.AllBuffered);
     }
 
     public void OnGameClear()
@@ -164,11 +166,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, true);
         photonView.RPC(nameof(RPC_DelayAndMovePlayers), RpcTarget.AllBuffered, 3f, gameclearMovePoint.position, gameclearMovePoint.rotation);
-        photonView.RPC(nameof(RPC_SetActiveGameUI), RpcTarget.AllBuffered, gameClearUI);
-
         // 클리어 지점으로 이동 시작
         DisableAllZombieSpawners();
-        KillAllZombies();       
+        KillAllZombies();
+
+        Debug.Log("gameclear rpc 호출");
+        photonView.RPC(nameof(RPC_SetActiveGameClearUI), RpcTarget.AllBuffered);
     }
 
     private void DisableAllEnemyBases()
@@ -401,5 +404,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         sharedHealthPercent = value;
         Debug.Log($"[GameManager] sharedHealthPercent 갱신됨: {value}");
+    }
+
+    public void PlayBossBGM()
+    {
+        if (BGMPlayer.Instance != null && bossBGM != null)
+        {
+            BGMPlayer.Instance.PlayBGM(bossBGM);
+        }
     }
 }

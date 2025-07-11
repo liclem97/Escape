@@ -3,7 +3,7 @@ using Photon.Pun;
 
 public class ExitGameTrigger : MonoBehaviourPun
 {
-    [SerializeField] private float exitDelay = 5f; // 종료까지 대기 시간 (초)
+    [SerializeField] private float exitDelay = 10f; // 종료까지 대기 시간 (초)
 
     private void OnEnable()
     {

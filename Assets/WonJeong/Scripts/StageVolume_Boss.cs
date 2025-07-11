@@ -43,5 +43,7 @@ public class StageVolume_Boss : StageVolume
     protected override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
+
+        GameManager.Instance.PlayBossBGM();
     }
 }
