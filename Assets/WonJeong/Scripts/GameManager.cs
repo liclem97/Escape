@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -34,6 +35,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [Header("Game information UI")]
     [SerializeField] private GameObject beforeStartUI;
+    [SerializeField] private Text beforeStartUI_Text;
+
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private GameObject gameClearUI;
 
@@ -73,6 +76,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         Debug.Log($"VRPlayer Start() - IsMine: {photonView.IsMine}");
+        if (gameOverUI && gameClearUI && gameOverUI.activeInHierarchy && gameClearUI.activeInHierarchy)
+        {
+            gameOverUI.SetActive(false);
+            gameClearUI.SetActive(false);
+        }
     }
 
     private void Update()
@@ -82,7 +90,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             isGameOver = true;
 
             photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, true);
-            
+
             OnGameOver();
         }
     }
@@ -96,14 +104,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             CameraMove.Instance.StartCoroutine(CameraMove.Instance.MoveToPosition(player1, player1Stage1Point, 2f));
             CameraMove.Instance.StartCoroutine(CameraMove.Instance.MoveToPosition(CameraMove.Instance.Vehicle, player2Stage1Point, 2f));
-        }        
+        }
 
         // 아이템 스폰 시작 및 힐팩 목표 플레이어 지정
-        ItemTargetTrigger trigger = FindFirstObjectByType<ItemTargetTrigger>();        
+        ItemTargetTrigger trigger = FindFirstObjectByType<ItemTargetTrigger>();
         if (trigger != null && healPackItemSpawner)
         {
             trigger.FlyTarget = player1.transform;
-            healPackItemSpawner.ItemSpawnStart();           
+            healPackItemSpawner.ItemSpawnStart();
         }
 
         // 플레이어1 리볼버 탄창 스폰 시작
@@ -119,7 +127,16 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         isFadingIn = !shoudFadeOut;
         isFadingOut = shoudFadeOut;
-    }    
+    }
+
+    [PunRPC]
+    void RPC_SetActiveGameUI(GameObject uiToActive)
+    {
+        if (uiToActive != null)
+        {
+            uiToActive.SetActive(true);
+        }
+    }
 
     private void OnGameOver()
     {
@@ -130,6 +147,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         //StartCoroutine(DelayAndMovePlayers(2.5f, gameoverMovePoint));
         DisableAllZombieSpawners();
         DisableAllEnemyBases();
+
+        photonView.RPC(nameof(RPC_SetActiveGameUI), RpcTarget.AllBuffered, gameOverUI);
     }
 
     public void OnGameClear()
@@ -142,7 +161,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         // StartCoroutine(DelayAndMovePlayers(3f, gameclearMovePoint));        
         // 클리어 지점으로 이동 시작
         DisableAllZombieSpawners();
-        KillAllZombies();        
+        KillAllZombies();
+
+        photonView.RPC(nameof(RPC_SetActiveGameUI), RpcTarget.AllBuffered, gameClearUI);
     }
 
     private void DisableAllEnemyBases()
@@ -157,7 +178,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void KillAllZombies()
     {
         // 씬에 있는 모든 EnemyBase 컴포넌트를 가진 좀비를 찾음
-        EnemyBase[] zombies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);        
+        EnemyBase[] zombies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
 
         int myViewID = photonView.ViewID; // GameManager의 PhotonView ID
 
@@ -341,9 +362,33 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (player1 != null && player2 != null)
         {
-            Debug.Log("[GM] 두 플레이어가 할당됨. 게임 시작");
-            OnGameStart();
+            //Debug.Log("[GM] 두 플레이어가 할당됨. 게임 시작");
+            //OnGameStart();
+
+            photonView.RPC(nameof(RPC_ShowBeforeStartText), RpcTarget.All, "Start Game Soon...");
+
+            // 게임 시작 지연 후 실제 시작
+            StartCoroutine(DelayedGameStart(2.5f));
         }
+    }
+
+    [PunRPC]
+    private void RPC_ShowBeforeStartText(string message)
+    {
+        if (beforeStartUI_Text != null && beforeStartUI != null)
+        {
+            beforeStartUI_Text.text = message;
+            beforeStartUI.SetActive(true);
+        }
+    }
+
+    private IEnumerator DelayedGameStart(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        // UI 숨김
+        beforeStartUI.SetActive(false);
+
+        OnGameStart();
     }
 
     [PunRPC]

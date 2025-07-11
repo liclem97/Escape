@@ -80,7 +80,7 @@ public class EnemyThrower : EnemyBase
 
     public void ThrowBall()
     {
-        if (target != null)
+        if (target != null && gameObject)
         {
             Vector3 targetPos = target.position + Vector3.up * 1.5f; // 약간 위쪽을 조준
             ball.GetComponent<ThrowBall>().photonView.RPC("ThrowToTarget", RpcTarget.All, targetPos);
