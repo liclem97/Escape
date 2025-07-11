@@ -107,7 +107,8 @@ public class ThrowBall : MonoBehaviourPun
     [PunRPC]
     private void RPC_DestroySelf()
     {
-        PhotonNetwork.Destroy(gameObject);
+        if (gameObject && PhotonNetwork.IsMasterClient)
+            PhotonNetwork.Destroy(gameObject);
     }
 
     [PunRPC]

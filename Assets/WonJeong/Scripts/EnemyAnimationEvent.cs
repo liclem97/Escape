@@ -34,7 +34,7 @@ public class EnemyAnimationEvent : MonoBehaviour
 
     public void DestoryEnemy()
     {
-        if (gameObject != null)
+        if (gameObject != null && PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.Destroy(gameObject);
         }
