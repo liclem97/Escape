@@ -32,6 +32,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private Transform gameoverMovePoint;
     [SerializeField] private Transform gameclearMovePoint;
 
+    [Header("Game information UI")]
+    [SerializeField] private GameObject beforeStartUI;
+    [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private GameObject gameClearUI;
+
     public GameObject GetPlayer1() => player1;
     public GameObject GetPlayer2() => player2;
 
@@ -75,7 +80,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (!isGameOver && player1Health != null && sharedHealthPercent <= 0f)
         {
             isGameOver = true;
-            isFadingOut = true;
+
+            photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, true);
+            
             OnGameOver();
         }
     }
@@ -107,24 +114,35 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    [PunRPC]
+    void RPC_SetIsFadeOut(bool shoudFadeOut)
+    {
+        isFadingIn = !shoudFadeOut;
+        isFadingOut = shoudFadeOut;
+    }    
+
     private void OnGameOver()
     {
         Debug.Log("[GameManager] 게임 오버!");
 
         // 게임오버 지점으로 이동 시작
-        StartCoroutine(DelayAndMovePlayers(2.5f, gameoverMovePoint));
+        photonView.RPC(nameof(RPC_DelayAndMovePlayers), RpcTarget.AllBuffered, 2.5f, gameoverMovePoint.position, gameoverMovePoint.rotation);
+        //StartCoroutine(DelayAndMovePlayers(2.5f, gameoverMovePoint));
         DisableAllZombieSpawners();
         DisableAllEnemyBases();
     }
 
-    private void OnGameClear()
+    public void OnGameClear()
     {
         Debug.Log("[GameManager] 게임 클리어!");
+
+        photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, true);
 
         // 클리어 지점으로 이동 시작
         DisableAllZombieSpawners();
         KillAllZombies();
-        StartCoroutine(DelayAndMovePlayers(3f, gameclearMovePoint));        
+        photonView.RPC(nameof(RPC_DelayAndMovePlayers), RpcTarget.AllBuffered, 3f, gameclearMovePoint.position, gameclearMovePoint.rotation);
+       // StartCoroutine(DelayAndMovePlayers(3f, gameclearMovePoint));        
     }
 
     private void DisableAllEnemyBases()
@@ -164,24 +182,31 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private IEnumerator DelayAndMovePlayers(float delay, Transform movePoint)
+    [PunRPC]
+    private void RPC_DelayAndMovePlayers(float delay, Vector3 movePos, Quaternion moveRot)
     {
-        if (movePoint == null) yield break;
+        StartCoroutine(DelayAndMovePlayers(delay, movePos, moveRot));
+    }
+
+    private IEnumerator DelayAndMovePlayers(float delay, Vector3 movePos, Quaternion moveRot)
+    {
+        if (movePos == null) yield break;
         yield return new WaitForSeconds(delay);
 
         float moveDuration = 0.5f;
 
         if (player1 != null)
         {
-            yield return StartCoroutine(MoveToPosition(player1.transform, movePoint.position, movePoint.rotation, moveDuration));
+            yield return StartCoroutine(MoveToPosition(player1.transform, movePos, moveRot, moveDuration));
         }
 
         if (player2 != null)
         {
-            yield return StartCoroutine(MoveToPosition(player2.transform, movePoint.position, movePoint.rotation, moveDuration));
+            yield return StartCoroutine(MoveToPosition(player2.transform, movePos, moveRot, moveDuration));
         }
 
-        TriggerFadeInAllPlayers();
+        photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, false);
+        //TriggerFadeInAllPlayers();
     }
 
     private IEnumerator MoveToPosition(Transform target, Vector3 endPos, Quaternion endRot, float duration)
@@ -202,17 +227,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         target.position = endPos;
         target.rotation = endRot;
 
-        TriggerFadeInAllPlayers();
+        photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, false);
+        //TriggerFadeInAllPlayers();
     }
 
-    private void TriggerFadeInAllPlayers()
-    {
-        if (player1 != null && player2 != null)
-        {
-            isFadingIn = true;            
-        }
-    }
+    //private void TriggerFadeInAllPlayers()
+    //{
+    //    if (player1 != null && player2 != null)
+    //    {
 
+    //        isFadingIn = true;
+    //    }
+    //}
 
     public void OnPlayerJoinedRoom()
     {

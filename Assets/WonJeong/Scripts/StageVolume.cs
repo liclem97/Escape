@@ -17,6 +17,7 @@ public class StageVolume : MonoBehaviourPun
     [SerializeField] private Transform player2ShortcutMovePoint;
 
     [SerializeField] private float moveTime = 1f;
+    [SerializeField] private float shortCutMoveTime = 0f;
 
     protected bool isActivated = false;
 
@@ -88,18 +89,23 @@ public class StageVolume : MonoBehaviourPun
         GameObject player2 = CameraMove.Instance.Vehicle;
 
         bool useShortcut = (shortcutGate != null && !shortcutGate.activeInHierarchy);
+        float moveNextStageTime = moveTime;
+        if (useShortcut)
+        {
+            moveNextStageTime = shortCutMoveTime;
+        }
 
         Transform dest1 = useShortcut ? player1ShortcutMovePoint : player1DefaultMovePoint;
         Transform dest2 = useShortcut ? player2ShortcutMovePoint : player2DefaultMovePoint;
 
         if (player1 != null && dest1 != null)
         {
-            CameraMove.Instance.StartCoroutine(CameraMove.Instance.MoveToPosition(player1, dest1, moveTime));
+            CameraMove.Instance.StartCoroutine(CameraMove.Instance.MoveToPosition(player1, dest1, moveNextStageTime));
         }
 
         if (player2 != null && dest2 != null)
         {
-            CameraMove.Instance.StartCoroutine(CameraMove.Instance.MoveToPosition(player2, dest2, moveTime));
+            CameraMove.Instance.StartCoroutine(CameraMove.Instance.MoveToPosition(player2, dest2, moveNextStageTime));
         }
     }
 

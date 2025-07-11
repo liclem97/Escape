@@ -91,4 +91,12 @@ public class EnemyAnimationEvent : MonoBehaviour
             audioSource.PlayOneShot(hitSound);
         }
     }
+
+    public void OnBossDied()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnGameClear();
+        }
+    }
 }

@@ -71,6 +71,9 @@ MonoBehaviour:
   - RPC_DestroyObject
   - RPC_Explode
   - RPC_DeactiveObject
+  - RPC_SetIsFadeIn
+  - RPC_SetIsFadeOut
+  - RPC_DelayAndMovePlayers
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

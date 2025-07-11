@@ -33,6 +33,11 @@ public class TestInput : MonoBehaviourPun
                 Debug.Log($"[TestInput] 체력 회복: {GameManager.player1Health.currentHealth}");
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha4) || ARAVRInput.GetDown(ARAVRInput.Button.Two, ARAVRInput.Controller.RTouch))
+        {
+            GameManager.Instance.OnGameClear();
+        }
     }
 
     [PunRPC]
