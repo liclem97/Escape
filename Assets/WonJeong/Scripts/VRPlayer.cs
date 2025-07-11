@@ -121,7 +121,7 @@ public class VRPlayer : MonoBehaviourPun
             photonView.RPC(nameof(AttachGunToHand), RpcTarget.AllBuffered, pistol.GetComponent<PhotonView>().ViewID);
 
             revolver.SetActive(false);
-            StartAmmoSpawn();
+            //StartAmmoSpawn(); // 메인 빌드시 주석처리
         }
     }
 

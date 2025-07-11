@@ -138,11 +138,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, true);
 
+        photonView.RPC(nameof(RPC_DelayAndMovePlayers), RpcTarget.AllBuffered, 3f, gameclearMovePoint.position, gameclearMovePoint.rotation);
+        // StartCoroutine(DelayAndMovePlayers(3f, gameclearMovePoint));        
         // 클리어 지점으로 이동 시작
         DisableAllZombieSpawners();
-        KillAllZombies();
-        photonView.RPC(nameof(RPC_DelayAndMovePlayers), RpcTarget.AllBuffered, 3f, gameclearMovePoint.position, gameclearMovePoint.rotation);
-       // StartCoroutine(DelayAndMovePlayers(3f, gameclearMovePoint));        
+        KillAllZombies();        
     }
 
     private void DisableAllEnemyBases()

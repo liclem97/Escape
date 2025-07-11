@@ -3276,8 +3276,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 0.88, y: 0.87, z: 1}
-  m_Center: {x: 0, y: 1.14, z: 0.6}
+  m_Size: {x: 0.88, y: 0.87, z: 3}
+  m_Center: {x: 0, y: 1.14, z: 0.9}
 --- !u!114 &6646647669853217822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3294,7 +3294,7 @@ MonoBehaviour:
   moveSpeed: 1
   enemyState: 0
   humanSearchRadius: 50
-  attackRange: 2.9
+  attackRange: 2.5
   attackDamage: 1
   attackDelay: 3
   health: 30
