@@ -169,7 +169,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (movePoint == null) yield break;
         yield return new WaitForSeconds(delay);
 
-        float moveDuration = 1.5f;
+        float moveDuration = 0.5f;
 
         if (player1 != null)
         {

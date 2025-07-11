@@ -18,7 +18,8 @@ public class RevolverAmmo : Item
     [PunRPC]
     protected override void RPC_FlyTo(Vector3 pos, Quaternion rot, float duration)
     {
-        base.RPC_FlyTo(pos, rot, duration);
+        // 아이템을 놓치면 항상 최초 위치로 되돌림
+        base.RPC_FlyTo(Spawner.SpawnPoint.position, Spawner.SpawnPoint.rotation, 0.5f);
     }
 
     [PunRPC]

@@ -1,17 +1,21 @@
 using UnityEngine;
 using Photon.Pun;
 
-public class DestructibleObject : MonoBehaviour, IDamageable
+public class DestructibleObject : MonoBehaviourPun, IDamageable
 {
     public void TakeDamage(float amount, int instigatorID)
     {
-        // PhotonView가 없으면 자동으로 추가
-        if (GetComponent<PhotonView>() == null)
+        if (gameObject != null)
         {
-            gameObject.AddComponent<PhotonView>();
+            //PhotonNetwork.Destroy(gameObject);
+            //gameObject.SetActive(false);
+            photonView.RPC(nameof(RPC_DeactiveObject), RpcTarget.AllBuffered);
         }
+    }
 
-        // 파괴 요청
-        PhotonNetwork.Destroy(gameObject);
+    [PunRPC]
+    private void RPC_DeactiveObject()
+    {
+        gameObject.SetActive(false);
     }
 }

@@ -240,7 +240,7 @@ public class EnemyBase : MonoBehaviourPun, IDamageable
 
         health -= amount;
 
-        Debug.Log("damage를 받음 " + amount + " 공격자: " + PhotonView.Find(instigatorID).Owner.NickName);
+        //Debug.Log("damage를 받음 " + amount + " 공격자: " + PhotonView.Find(instigatorID).Owner.NickName);
         if (health <= 0f)
         {
             photonView.RPC(nameof(RPC_ChangeState), RpcTarget.All, EnemyState.Die);

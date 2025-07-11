@@ -85,7 +85,7 @@ MonoBehaviour:
   HitRayMask:
     serializedVersion: 2
     m_Bits: 9088
-  gunDamage: 10
+  gunDamage: 300
   gunAttackDelay: 0.5
   maxAmmo: 6
   attackRange: 100
@@ -557,7 +557,7 @@ PrefabInstance:
       objectReference: {fileID: 5310139647055161556}
     - target: {fileID: 2369246976620967767, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: HitRayMask.m_Bits
-      value: 9089
+      value: 9088
       objectReference: {fileID: 0}
     - target: {fileID: 2472708392277176286, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_UseWorldSpace

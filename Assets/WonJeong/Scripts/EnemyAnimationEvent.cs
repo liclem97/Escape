@@ -1,5 +1,5 @@
+using Photon.Pun;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class EnemyAnimationEvent : MonoBehaviour
 {
@@ -34,7 +34,10 @@ public class EnemyAnimationEvent : MonoBehaviour
 
     public void DestoryEnemy()
     {
-        Destroy(gameObject);
+        if (gameObject != null)
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
     }
 
     public void throwColliderOn()

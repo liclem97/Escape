@@ -69,6 +69,12 @@ public class ThrowBall : MonoBehaviourPun
 
     public void Explode()
     {
+        photonView.RPC(nameof(RPC_Explode), RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    private void RPC_Explode()
+    {
         if (isExploded) return;
         isExploded = true;
 
@@ -101,7 +107,7 @@ public class ThrowBall : MonoBehaviourPun
     [PunRPC]
     private void RPC_DestroySelf()
     {
-        Destroy(gameObject, 0.01f);
+        PhotonNetwork.Destroy(gameObject);
     }
 
     [PunRPC]

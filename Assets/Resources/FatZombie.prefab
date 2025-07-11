@@ -1679,7 +1679,7 @@ MonoBehaviour:
   target: {fileID: 0}
   moveSpeed: 1
   enemyState: 0
-  humanSearchRadius: 20
+  humanSearchRadius: 50
   attackRange: 3.1
   attackDamage: 1
   attackDelay: 3
@@ -1702,6 +1702,7 @@ MonoBehaviour:
   idleSound: {fileID: 8300000, guid: 776ed1391ebefe54895902450d5e8e88, type: 3}
   attackSound: {fileID: 8300000, guid: ef5730d78536d354a8e4ad0a14c36644, type: 3}
   dieSound: {fileID: 8300000, guid: 51b9bc401f84ae84baf4d369b0186c56, type: 3}
+  hitSound: {fileID: 0}
 --- !u!114 &6940637101224025300
 MonoBehaviour:
   m_ObjectHideFlags: 0

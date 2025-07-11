@@ -233,9 +233,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 210224850809612994}
     m_Modifications:
+    - target: {fileID: 153236586264979850, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 346461926300315103, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1174803556635335131, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3983563736937517588, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4623672791453053959, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
       propertyPath: m_Name
       value: Magazine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4623672791453053959, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6403088353068102001, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
       propertyPath: m_LocalPosition.x
@@ -275,6 +295,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6403088353068102001, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7727087502006177553, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8775085823348474469, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8964894540140317357, guid: 0a07d50af85a8514fad488ab69e1b734, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

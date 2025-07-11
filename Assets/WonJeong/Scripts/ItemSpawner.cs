@@ -15,6 +15,11 @@ public class ItemSpawner : MonoBehaviourPun
         set => currentItem = value;
     }
 
+    public Transform SpawnPoint
+    {
+        get => spawnPoint;
+    }
+
     public void ItemSpawnStart()
     {
         if (PhotonNetwork.IsMasterClient) // 서버에서 아이템 스폰

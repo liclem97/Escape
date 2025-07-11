@@ -9,7 +9,7 @@ public class HealthVignetteController : MonoBehaviour
     private ColorAdjustments colorAdjust;
 
     private float fadeOutTimer = 0f;
-    private float fadeOutDuration = 2f; // 페이드 아웃 시간
+    private float fadeOutDuration = 1.5f; // 페이드 아웃 시간
 
     private float fadeInTimer = 0f;
     private float fadeInDuration = 2f;

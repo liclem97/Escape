@@ -39,6 +39,12 @@ public class Bomb : MonoBehaviourPun, IDamageable
 
     private void Explode()
     {
+        photonView.RPC(nameof(RPC_Explode), RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    private void RPC_Explode()
+    {
         isExploded = true;
 
         // 폭발 로직을 서버에서만 실행
@@ -53,7 +59,7 @@ public class Bomb : MonoBehaviourPun, IDamageable
                     float damageRatio = Mathf.Clamp01(1f - distance / bombRange); // 가까울수록 1, 멀수록 0
                     float finalDamage = bombDamage * damageRatio;
 
-                    target.TakeDamage(finalDamage, 0);
+                    target.TakeDamage(finalDamage, photonView.ViewID);
                 }
             }
         }
@@ -61,8 +67,17 @@ public class Bomb : MonoBehaviourPun, IDamageable
         // 폭발 효과는 모두에게 공유
         photonView.RPC(nameof(RPC_PlayExplosionEffect), RpcTarget.All);
 
-        // 일정 시간 후 제거
-        Destroy(gameObject, 0.5f);
+        //if (gameObject != null)
+        //{
+        //    PhotonNetwork.Destroy(gameObject);
+        //}
+        photonView.RPC(nameof(RPC_DestroyObject), RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    private void RPC_DestroyObject()
+    {
+        Destroy(gameObject);
     }
 
     [PunRPC]
