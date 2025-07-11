@@ -135,4 +135,10 @@ public class ThrowBall : MonoBehaviourPun
             Explode();
         }
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position, ballRange);
+    }
 }

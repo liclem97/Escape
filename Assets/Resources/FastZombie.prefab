@@ -3269,14 +3269,14 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 49152
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.88, y: 0.87, z: 3}
-  m_Center: {x: 0, y: 1.14, z: 0.8}
+  m_Center: {x: 0, y: 1.14, z: 1.1}
 --- !u!114 &6646647669853217822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3293,7 +3293,7 @@ MonoBehaviour:
   moveSpeed: 3.5
   enemyState: 0
   humanSearchRadius: 100
-  attackRange: 2.5
+  attackRange: 2.8
   attackDamage: 1
   attackDelay: 3
   health: 20
