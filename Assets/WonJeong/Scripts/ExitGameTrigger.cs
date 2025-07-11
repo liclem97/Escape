@@ -25,9 +25,10 @@ public class ExitGameTrigger : MonoBehaviourPun
 
         Debug.Log("[ExitGameTrigger] 게임 종료");
 
-        // 여기에서 원하는 방식으로 게임 종료
-        // 예: 로비로 씬 이동
-        //PhotonNetwork.LoadLevel("LobbyScene"); // 씬 이름은 상황에 맞게 수정
-        Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+    Application.Quit();
+#endif
     }
 }

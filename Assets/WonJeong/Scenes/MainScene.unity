@@ -1594,6 +1594,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4000012506713666, guid: 58d97d456aead63499ac7d5316541f78, type: 3}
   m_PrefabInstance: {fileID: 48881432}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &50870279
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 50870280}
+  - component: {fileID: 50870281}
+  m_Layer: 0
+  m_Name: GameClearPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &50870280
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 50870279}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.9961947, z: 0, w: -0.08715578}
+  m_LocalPosition: {x: 323.89, y: 12.57, z: 366.66}
+  m_LocalScale: {x: 0.087103315, y: 0.14805822, z: 0.08846199}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1293732431}
+  m_LocalEulerAnglesHint: {x: 0, y: -190, z: 0}
+--- !u!114 &50870281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 50870279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 653e4dbb325001949bf7530ebd6bd0a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &52098710
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47968,6 +48012,7 @@ Transform:
   m_Children:
   - {fileID: 726084057}
   - {fileID: 504877907}
+  - {fileID: 50870280}
   - {fileID: 257577908}
   m_Father: {fileID: 2022522978}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -50027,7 +50072,7 @@ MonoBehaviour:
   player2: {fileID: 0}
   healPackItemSpawner: {fileID: 594323473}
   gameoverMovePoint: {fileID: 1419170219}
-  gameclearMovePoint: {fileID: 1419170219}
+  gameclearMovePoint: {fileID: 50870280}
   beforeStartUI: {fileID: 877731076}
   beforeStartUI_Text: {fileID: 90801893}
   gameOverUI: {fileID: 115828438}

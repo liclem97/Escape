@@ -130,11 +130,18 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void RPC_SetActiveGameUI(GameObject uiToActive)
+    private void RPC_SetActiveGameUI(GameObject uiToActive)
     {
+        Debug.Log("rpc_SetActivateGameUI 호출");
         if (uiToActive != null)
         {
+            Debug.Log("UI 활성화 됨");
+            Debug.Log($"uiToActive: {uiToActive.name}");
             uiToActive.SetActive(true);
+        }
+        else
+        {
+            Debug.Log("uiToActive가 null인 상태");
         }
     }
 
@@ -156,14 +163,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log("[GameManager] 게임 클리어!");
 
         photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, true);
-
         photonView.RPC(nameof(RPC_DelayAndMovePlayers), RpcTarget.AllBuffered, 3f, gameclearMovePoint.position, gameclearMovePoint.rotation);
-        // StartCoroutine(DelayAndMovePlayers(3f, gameclearMovePoint));        
+        photonView.RPC(nameof(RPC_SetActiveGameUI), RpcTarget.AllBuffered, gameClearUI);
+
         // 클리어 지점으로 이동 시작
         DisableAllZombieSpawners();
-        KillAllZombies();
-
-        photonView.RPC(nameof(RPC_SetActiveGameUI), RpcTarget.AllBuffered, gameClearUI);
+        KillAllZombies();       
     }
 
     private void DisableAllEnemyBases()
