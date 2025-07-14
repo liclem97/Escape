@@ -43,7 +43,9 @@ public class VRPlayer : MonoBehaviourPun
             rightHand = rig.rightHandAnchor;
             leftHand = rig.leftHandAnchor;
             hmd = rig.centerEyeAnchor;
-        }        
+        }
+
+        StartAmmoSpawn();
     }
 
     private void Update()

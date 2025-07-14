@@ -33,11 +33,27 @@ public class RevolverAmmo : Item
     // 리볼버와 부딪힐 시 리볼버의 Reload 함수를 호출
     protected void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"revolver ammo on trigger enter:{other.name}");
         Revolver revolver = other.GetComponent<Revolver>();
         if (revolver)
         {
             revolver.Reload();
             photonView.RPC(nameof(UseItem), RpcTarget.AllBuffered);
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        SphereCollider sphere = GetComponent<SphereCollider>();
+        if (sphere == null) return;
+
+        // 기즈모 색상 설정 (선택)
+        Gizmos.color = Color.cyan;
+
+        // 스피어 콜라이더의 실제 위치 계산 (로컬 -> 월드 변환 포함)
+        Vector3 center = transform.position + transform.rotation * Vector3.Scale(sphere.center, transform.lossyScale);
+        float radius = sphere.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+
+        Gizmos.DrawWireSphere(center, radius);
     }
 }
