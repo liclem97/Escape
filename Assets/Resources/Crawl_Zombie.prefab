@@ -981,7 +981,7 @@ MonoBehaviour:
   attackRange: 2.5
   attackDamage: 15
   attackDelay: 5
-  health: 30
+  health: 20
 --- !u!114 &4022095243427431812
 MonoBehaviour:
   m_ObjectHideFlags: 0
