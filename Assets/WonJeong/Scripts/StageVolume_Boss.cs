@@ -1,13 +1,14 @@
 using UnityEngine;
 using Photon.Pun;
 
+/* 보스 스테이지 볼륨 스크립트 */
 public class StageVolume_Boss : StageVolume
 {
     [Header("Boss Enemy")]
-    [SerializeField] private GameObject bossPrefabs;
+    [SerializeField] private GameObject bossPrefabs;    // 보스 프리팹
 
     [Header("Zombie Spawners")]
-    [SerializeField] private GameObject[] zSpawners;
+    [SerializeField] private GameObject[] zSpawners;    // 좀비 스포너 프리팹
 
     protected override void Awake()
     {   
@@ -25,10 +26,11 @@ public class StageVolume_Boss : StageVolume
     }
 
     protected override void SetEnemiesActive(bool active)
-    {   
+    {       
+        // 보스와 좀비 스포너를 추가로 활성화 한다
         if (bossPrefabs != null)
         {
-            bossPrefabs.SetActive(active);
+            bossPrefabs.SetActive(active); 
         }
 
         foreach(var spawner in zSpawners)
@@ -40,6 +42,7 @@ public class StageVolume_Boss : StageVolume
         base.SetEnemiesActive(active);
     }
 
+    // 트리거에 플레이어 진입 시 보스 BGM 재생
     protected override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);

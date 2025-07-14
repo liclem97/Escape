@@ -3,6 +3,7 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Events;
 
+/* 플레이어의 접속을 확인하는 스크립트 */
 public class PhotonNetworkManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] UnityEvent joinedRoomEvent;

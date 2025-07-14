@@ -2,19 +2,20 @@
 using System.Collections;
 using UnityEngine;
 
+/* 총의 레이와 크로스헤어를 그리는 스크립트 */
 public class RayVisualizer : MonoBehaviour
 {
     [Header("Ray")]
-    [SerializeField] private LineRenderer Ray;
-    [SerializeField] private LayerMask HitRayMask;
+    [SerializeField] private LineRenderer Ray;          // 라인 렌더러
+    [SerializeField] private LayerMask HitRayMask;      // 레이가 부딪히는 마스크
     [SerializeField] private float Distance = 100f;
 
     [Header("Reticle Point")]
-    [SerializeField] private GameObject ReticlePoint;
+    [SerializeField] private GameObject ReticlePoint;   // 레이의 끝에 그리는 포인트
     [SerializeField] private bool ShowReticle = true;
 
     [Header("Transform")]
-    [SerializeField] private Transform muzzlePoint;
+    [SerializeField] private Transform muzzlePoint;     // 레이의 시작점
 
     private PhotonView rootPhotonView;
 

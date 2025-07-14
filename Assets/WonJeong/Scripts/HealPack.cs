@@ -1,6 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
+/* 플레이어 1의 체력을 회복시켜주는 힐팩 아이템 */
 public class HealPack : Item
 {
     [PunRPC]
@@ -25,11 +26,10 @@ public class HealPack : Item
     protected override void UseItem()
     {   
         if (GameManager.player1Health != null)
-        {
+        {   
+            // 힐량은 플레이어가 닳은 피 만큼, 항상 최대 체력으로 채움
             float healAmount = GameManager.player1Health.MaxHealth - GameManager.player1Health.currentHealth;
             GameManager.player1Health.RestoreHealth(healAmount);
-
-            //Debug.Log($"Use HealPack Item, healAmount: {healAmount}");
         }
         base.UseItem(); // Destroy
     }

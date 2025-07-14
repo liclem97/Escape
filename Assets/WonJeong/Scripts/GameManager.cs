@@ -3,48 +3,49 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+/* 게임 매니저 스크립트 */
 public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager Instance { get; private set; }
     public static VRPlayerHealth player1Health; // 플레이어1의 체력 참조
-    public static float sharedHealthPercent = 1f;
-    public static bool isFadingOut = false;
-    public static bool isFadingIn = false;
+    public static float sharedHealthPercent = 1f; // 플레이어1의 체력 퍼센트
+    public static bool isFadingOut = false; // FadeOut 실행 변수
+    public static bool isFadingIn = false;  // FadeIn 실행 변수
 
     [Header("Spawn Points")]
     [SerializeField] private Transform player1SpawnPoint;
-    [SerializeField] private Transform player2SpawnPoint;
+    [SerializeField] private Transform player2SpawnPoint;   // 플레이어들의 스폰 위치 저장
 
     [Header("Stage Start Point")]
     [SerializeField] private Transform player1Stage1Point;
-    [SerializeField] private Transform player2Stage1Point;
+    [SerializeField] private Transform player2Stage1Point;  // 게임 시작 시 스테이지 1의 이동 지점
 
     [Header("Managers")]
     [SerializeField] private CameraMove cameraMoveManager;
 
     [Header("Players (Runtime Assigned)")]
     [SerializeField] private GameObject player1;
-    [SerializeField] private GameObject player2;
+    [SerializeField] private GameObject player2;            // 런타임 중 플레이어 저장 변수
 
     [Header("Item Spawner")]
-    [SerializeField] private ItemSpawner healPackItemSpawner;
+    [SerializeField] private ItemSpawner healPackItemSpawner;   // 힐팩 아이템 스포너 저장 변수
 
     [Header("Move Points")]
-    [SerializeField] private Transform gameoverMovePoint;
-    [SerializeField] private Transform gameclearMovePoint;
+    [SerializeField] private Transform gameoverMovePoint;   // 게임 오버시 이동할 위치
+    [SerializeField] private Transform gameclearMovePoint;  // 게임 클리어시 이동할 위치
 
     [Header("Game information UI")]
     [SerializeField] private GameObject beforeStartUI;
     [SerializeField] private Text beforeStartUI_Text;
     [SerializeField] private GameObject gameOverUI;
-    [SerializeField] private GameObject gameClearUI;
+    [SerializeField] private GameObject gameClearUI;    // 각 UI 저장
 
     [Header("Sound")]
     [SerializeField] private AudioClip gamePlayBGM;
-    [SerializeField] private AudioClip bossBGM;
+    [SerializeField] private AudioClip bossBGM;         // 게임 진행, 보스 BGM 저장
 
     public GameObject GetPlayer1() => player1;
-    public GameObject GetPlayer2() => player2;    
+    public GameObject GetPlayer2() => player2;
 
     private bool isGameOver = false;
     private bool isGameClear = false;
@@ -85,16 +86,22 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void Update()
     {
+        // SharedHealthPercent가 0 이하가 되면 게임 오버
         if (!isGameOver && player1Health != null && sharedHealthPercent <= 0f)
         {
             isGameOver = true;
 
-            photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, true);
+            photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, true);  // 모든 클라이언트에서 페이드 아웃
 
             OnGameOver();
         }
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: OnGameStart
+    * 기능: 게임을 시작하는 함수 
+    ***********************************************************************************/
     private void OnGameStart()
     {
         if (player1 == null || player2 == null) return;
@@ -121,6 +128,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             player.StartAmmoSpawn();
         }
 
+        // BGM 시작
         if (BGMPlayer.Instance != null && gamePlayBGM != null)
         {
             BGMPlayer.Instance.PlayBGM(gamePlayBGM);
@@ -128,10 +136,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void RPC_SetIsFadeOut(bool shoudFadeOut)
+    void RPC_SetIsFadeOut(bool shouldFadeOut)
     {
-        isFadingIn = !shoudFadeOut;
-        isFadingOut = shoudFadeOut;
+        isFadingIn = !shouldFadeOut;
+        isFadingOut = shouldFadeOut;
     }
 
     [PunRPC]
@@ -146,34 +154,48 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (gameOverUI) gameOverUI.SetActive(true);
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: OnGameOver
+    * 기능: 게임 오버 시 실행되는 함수
+    ***********************************************************************************/
     private void OnGameOver()
     {
         Debug.Log("[GameManager] 게임 오버!");
 
         // 게임오버 지점으로 이동 시작
         photonView.RPC(nameof(RPC_DelayAndMovePlayers), RpcTarget.AllBuffered, 2.5f, gameoverMovePoint.position, gameoverMovePoint.rotation);
-        //StartCoroutine(DelayAndMovePlayers(2.5f, gameoverMovePoint));
-        DisableAllZombieSpawners();
-        DisableAllEnemyBases();
 
-        Debug.Log("gameover rpc 호출");
+        DisableAllZombieSpawners();
+        DisableAllEnemyBases();         // 모든 좀비 스포너 및 살아있는 좀비 비활성화
+
         photonView.RPC(nameof(RPC_SetActiveGameOverUI), RpcTarget.AllBuffered);
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: OnGameClear
+    * 기능: 게임 클리어 시 실행되는 함수
+    ***********************************************************************************/
     public void OnGameClear()
     {
         Debug.Log("[GameManager] 게임 클리어!");
 
-        photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, true);
-        photonView.RPC(nameof(RPC_DelayAndMovePlayers), RpcTarget.AllBuffered, 3f, gameclearMovePoint.position, gameclearMovePoint.rotation);
-        // 클리어 지점으로 이동 시작
+        photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, true);  // 페이드 아웃
+        photonView.RPC(nameof(RPC_DelayAndMovePlayers), RpcTarget.AllBuffered, 3f, gameclearMovePoint.position, gameclearMovePoint.rotation); // 클리어 지점으로 이동
+
         DisableAllZombieSpawners();
-        KillAllZombies();
+        KillAllZombies();   // 모든 좀비 스포너 비활성화 및 살아있는 좀비를 모두 죽임
 
         Debug.Log("gameclear rpc 호출");
         photonView.RPC(nameof(RPC_SetActiveGameClearUI), RpcTarget.AllBuffered);
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: DisableAllEnemyBases
+    * 기능: 활성화 되어있는 모든 좀비를 비활성화 시킴
+    ***********************************************************************************/
     private void DisableAllEnemyBases()
     {
         var enemyBases = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
@@ -183,6 +205,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: DisableAllEnemyBases
+    * 기능: 활성화 되어있는 모든 좀비를 죽임
+    ***********************************************************************************/
     private void KillAllZombies()
     {
         // 씬에 있는 모든 EnemyBase 컴포넌트를 가진 좀비를 찾음
@@ -202,6 +229,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log("[GameManager] 모든 좀비를 제거함");
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: DisableAllZombieSpawners
+    * 기능: 좀비 스포너를 꺼서 스폰을 막음
+    ***********************************************************************************/
     private void DisableAllZombieSpawners()
     {
         ZombieSpawner[] zSpawners = FindObjectsByType<ZombieSpawner>(FindObjectsSortMode.None);
@@ -217,6 +249,15 @@ public class GameManager : MonoBehaviourPunCallbacks
         StartCoroutine(DelayAndMovePlayers(delay, movePos, moveRot));
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: DelayAndMovePlayers
+    * 기능: 설정한 시간 이후 저장한 위치로 플레이어를 이동시킴
+    * 입력: 
+    *   delay: 대기하는 시간
+    *   movePos: 이동 위치
+    *   moveRot: 이동 회전값
+    ***********************************************************************************/
     private IEnumerator DelayAndMovePlayers(float delay, Vector3 movePos, Quaternion moveRot)
     {
         if (movePos == null) yield break;
@@ -235,9 +276,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, false);
-        //TriggerFadeInAllPlayers();
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: MoveToPosition
+    * 기능: 저장한 위치로 플레이어를 이동시킴
+    * 입력: 
+    *   target: 이동 목표
+    *   endPos: 목표의 위치
+    *   endRot: 목표의 회전 값
+    *   duration: 이동 시간
+    ***********************************************************************************/
     private IEnumerator MoveToPosition(Transform target, Vector3 endPos, Quaternion endRot, float duration)
     {
         Vector3 startPos = target.position;
@@ -257,22 +307,19 @@ public class GameManager : MonoBehaviourPunCallbacks
         target.rotation = endRot;
 
         photonView.RPC(nameof(RPC_SetIsFadeOut), RpcTarget.AllBuffered, false);
-        //TriggerFadeInAllPlayers();
     }
 
-    //private void TriggerFadeInAllPlayers()
-    //{
-    //    if (player1 != null && player2 != null)
-    //    {
-
-    //        isFadingIn = true;
-    //    }
-    //}
-
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: OnPlayerJoinedRoom
+    * 기능: 플레이어 입장 시 실행 Callback 함수  
+    ***********************************************************************************/
     public void OnPlayerJoinedRoom()
     {
+        // 스폰할 플레이어 프리팹
         string prefabName = "VRPlayer";
 
+        // 플레이어 1과 2의 스폰 위치 설정
         Transform spawn = PhotonNetwork.CurrentRoom.PlayerCount == 1
             ? player1SpawnPoint
             : player2SpawnPoint;
@@ -305,15 +352,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         AssignPlayers();
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: AssignPlayers
+    * 기능: 플레이어 입장 시 게임 매니저에 각 플레이어를 할당함
+    ***********************************************************************************/
     private void AssignPlayers()
     {
+        // 모든 포톤 뷰를 탐색함
         foreach (var view in FindObjectsByType<PhotonView>(FindObjectsSortMode.None))
         {
-            if (view.CompareTag("Player"))
+            if (view.CompareTag("Player"))  // Player 태그가 있는지 확인
             {
-                int actorNumber = view.Owner.ActorNumber;
+                int actorNumber = view.Owner.ActorNumber; // 플레이어의 액터 넘버 확인
 
-                if (actorNumber == 1 && player1 == null)
+                if (actorNumber == 1 && player1 == null)    // 1번 플레이어인 경우
                 {
                     player1 = view.gameObject;
 
@@ -321,21 +374,20 @@ public class GameManager : MonoBehaviourPunCallbacks
                     VRPlayer vrPlayer = player1.GetComponent<VRPlayer>();
                     vrPlayer?.InitPlayer1();
                 }
-                else if (actorNumber == 2 && player2 == null)
+                else if (actorNumber == 2 && player2 == null)   // 2번 플레이어인 경우
                 {
                     player2 = view.gameObject;
                     if (CameraMove.Instance != null)
-                    {
-                        //cameraMoveManager.Player2 = player2;
-
+                    {                       
                         if (CameraMove.Instance.Vehicle != null)
-                        {
+                        {   
+                            // 헬리콥터의 AttachPoint를 찾아서 저장
                             Transform attachPoint = CameraMove.Instance.Vehicle.transform.Find("AttachPoint");
                             if (attachPoint != null)
                             {
                                 player2.transform.SetParent(attachPoint);
                                 player2.transform.localPosition = Vector3.zero;
-                                player2.transform.localRotation = Quaternion.identity;
+                                player2.transform.localRotation = Quaternion.identity;  // 플레이어2를 헬리콥터의 AttachPoint에 붙임
                             }
                         }
                     }
@@ -370,9 +422,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (player1 != null && player2 != null)
         {
-            //Debug.Log("[GM] 두 플레이어가 할당됨. 게임 시작");
-            //OnGameStart();
-
             photonView.RPC(nameof(RPC_ShowBeforeStartText), RpcTarget.All, "Start Game Soon...");
 
             // 게임 시작 지연 후 실제 시작

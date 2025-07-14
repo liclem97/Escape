@@ -1,6 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
+/* 리볼버 탄창 아이템 */
 public class RevolverAmmo : Item
 {
     [PunRPC]
@@ -29,6 +30,7 @@ public class RevolverAmmo : Item
         base.UseItem(); // Destroy
     }
 
+    // 리볼버와 부딪힐 시 리볼버의 Reload 함수를 호출
     protected void OnTriggerEnter(Collider other)
     {
         Revolver revolver = other.GetComponent<Revolver>();

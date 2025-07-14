@@ -2,10 +2,11 @@
 using System.Collections;
 using UnityEngine;
 
+/* 물건을 던지는 적 스크립트 함수 */
 public class EnemyThrower : EnemyBase
 {
     [Header("SpawnPoint")]
-    [SerializeField] private Transform ballAttachPoint;
+    [SerializeField] private Transform ballAttachPoint; // 던지는 물체를 붙이는 위치
 
     private GameObject ball;
 
@@ -18,6 +19,11 @@ public class EnemyThrower : EnemyBase
         maxHealth = health;
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: CoAttack
+    * 기능: 적 공격 함수   
+    ***********************************************************************************/
     protected override IEnumerator CoAttack()
     {
         while (target != null && GameManager.Instance != null && !GameManager.Instance.IsGameOver)
@@ -40,6 +46,11 @@ public class EnemyThrower : EnemyBase
         }
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: RPC_TriggerThrow
+    * 기능: 적 던지는 공격 애니메이션 동기화 함수   
+    ***********************************************************************************/
     [PunRPC]
     private void RPC_TriggerThrow()
     {
@@ -47,12 +58,19 @@ public class EnemyThrower : EnemyBase
         animator.SetFloat("Speed", 0f);
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: SpawnThrowBall
+    * 기능: 던지는 공을 스폰하는 함수
+    ***********************************************************************************/
     public void SpawnThrowBall()
     {
         if (!photonView.IsMine) return;
 
+        // 공 스폰
         ball = PhotonNetwork.Instantiate("ThrowBall", ballAttachPoint.position, ballAttachPoint.rotation);
 
+        // 공 대미지 변경
         if (ball.TryGetComponent<ThrowBall>(out var ballref))
         {
             ballref.ballDamage = attackDamage;
@@ -61,15 +79,23 @@ public class EnemyThrower : EnemyBase
         photonView.RPC(nameof(RPC_AttachBallToHand), RpcTarget.All, ball.GetComponent<PhotonView>().ViewID);
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: RPC_AttachBallToHand
+    * 기능: 스폰한 공을 자신의 손에 붙이는 함수
+    * 입력:
+    *   - ballViewID: 스폰한 공의 photonView ID
+    ***********************************************************************************/
     [PunRPC]
     private void RPC_AttachBallToHand(int ballViewID)
     {
+        // 공의 ViewID를 씬에서 찾아서 저장
         GameObject obj = PhotonView.Find(ballViewID)?.gameObject;
         if (obj != null)
         {
             obj.transform.SetParent(ballAttachPoint);
             obj.transform.localPosition = Vector3.zero;
-            obj.transform.localRotation = Quaternion.identity;
+            obj.transform.localRotation = Quaternion.identity;  // 저장한 공의 위치 설정
 
             if (obj.TryGetComponent<ThrowBall>(out var ballScript))
             {
@@ -78,15 +104,25 @@ public class EnemyThrower : EnemyBase
         }
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: ThrowBall
+    * 기능: 공을 던지는 함수
+    ***********************************************************************************/
     public void ThrowBall()
     {
         if (target != null && gameObject)
         {
-            Vector3 targetPos = target.position + Vector3.up * 1.2f; // 약간 위쪽을 조준
+            Vector3 targetPos = target.position + Vector3.up * 1.2f; // 타깃의 약간 위쪽을 조준
             ball.GetComponent<ThrowBall>().photonView.RPC("ThrowToTarget", RpcTarget.All, targetPos);
         }        
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: RPC_TriggerThrowCancel
+    * 기능: 던지는 공격이 캔슬 됐을 시 애니메이션을 동기화하는 함수
+    ***********************************************************************************/
     [PunRPC]
     private void RPC_TriggerThrowCancel()
     {
@@ -97,7 +133,6 @@ public class EnemyThrower : EnemyBase
             ballref.Explode();
         }
     }
-
     public void ThrowCancel()
     {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);

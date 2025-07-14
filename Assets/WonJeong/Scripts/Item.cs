@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
+/* 플레이어가 사용하는 아이템 스크립트 */
 public class Item : MonoBehaviourPun
 {
     [SerializeField] protected float autoUseTimer = 1.5f; // 자동 사용 딜레이
@@ -11,12 +12,12 @@ public class Item : MonoBehaviourPun
 
     private ItemSpawner itemSpawner;
 
-    private bool isHeld = false;
-    private bool isInTargetTrigger = false;
-    protected bool shouldUseItem = false;
+    private bool isHeld = false;                // 아이템이 잡혀있는 상태인지 판단
+    private bool isInTargetTrigger = false;     // 아이템이 트리거 안에 있는지 판단
+    protected bool shouldUseItem = false;       // 아이템을 사용해야 하는지 판다
 
-    private Transform holder = null;
-    private Transform targetPlayer;
+    private Transform holder = null;            // 아이템을 집은 hand의 transform
+    private Transform targetPlayer;             // 아이템 타겟의 위치
 
     protected AudioSource audioSource;
     protected int holdingPlayerViewID = -1;
@@ -39,12 +40,19 @@ public class Item : MonoBehaviourPun
         photonView.RPC(nameof(RPC_AttachToLeftHand), RpcTarget.AllBuffered, playerViewID);
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: RPC_AttachToLeftHand
+    * 기능: 아이템을 왼손에 붙이고 동기화 하는 함수
+    * 입력:
+    *  playerViewID: 아이템을 붙일 플레이어의 ViewID
+    ***********************************************************************************/
     [PunRPC]
     protected virtual void RPC_AttachToLeftHand(int playerViewID)
     {
-        PhotonView playerView = PhotonView.Find(playerViewID);
-        var rig = playerView?.GetComponentInChildren<OVRCameraRig>();
-        Transform leftHand = rig?.leftHandAnchor;
+        PhotonView playerView = PhotonView.Find(playerViewID);          // 플레이어의 뷰 ID
+        var rig = playerView?.GetComponentInChildren<OVRCameraRig>();   // 플레이어의 rig
+        Transform leftHand = rig?.leftHandAnchor;                       // rig에서 왼손 위치를 저장함
 
         if (leftHand == null)
         {
@@ -54,14 +62,14 @@ public class Item : MonoBehaviourPun
 
         transform.SetParent(leftHand);
         transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
+        transform.localRotation = Quaternion.identity;                  // 아이템의 부모 설정
 
         if (TryGetComponent<Rigidbody>(out var rb))
-            rb.isKinematic = true;
+            rb.isKinematic = true;                                      // Kinematic On
 
-        isHeld = true;
-        holder = leftHand;
-        holdingPlayerViewID = playerViewID;
+        isHeld = true;                                                  // 잡은 상태로 전환
+        holder = leftHand;                                              // 왼손 저장
+        holdingPlayerViewID = playerViewID;                             // 잡은 플레이어의 viewID 저장
     }
 
     public void DetachFromHand()
@@ -69,10 +77,15 @@ public class Item : MonoBehaviourPun
         photonView.RPC(nameof(RPC_DetachFromHand), RpcTarget.AllBuffered);
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: RPC_DetachFromHand
+    * 기능: 아이템을 왼손에서 분리하고 동기화하는 함수    
+    ***********************************************************************************/
     [PunRPC]
     protected virtual void RPC_DetachFromHand()
     {
-        isHeld = false;
+        isHeld = false;                                                 
         transform.SetParent(null);
         holder = null;
 
@@ -82,6 +95,8 @@ public class Item : MonoBehaviourPun
             rb.detectCollisions = true;
         }
 
+        // 아이템이 TargetTrigger에 있고 타깃 플레이어가 설정된 경우
+        // 타깃 플레이어의 위치로 아이템이 날아간다
         if (isInTargetTrigger && targetPlayer != null)
         {
             photonView.RPC(nameof(RPC_FlyTo), RpcTarget.AllBuffered,
@@ -91,7 +106,7 @@ public class Item : MonoBehaviourPun
             // 모든 클라이언트에서 일정 시간 후 UseItem 시도
             StartCoroutine(AutoUseAfterDelay(autoUseTimer));
         }
-        else if (Spawner != null)
+        else if (Spawner != null)   // 이 외의 경우엔 스포너의 위치로 되돌아간다
         {
             photonView.RPC(nameof(RPC_FlyTo), RpcTarget.AllBuffered,
                 Spawner.transform.position, Spawner.transform.rotation, 0.5f);
@@ -104,6 +119,7 @@ public class Item : MonoBehaviourPun
         }
     }
 
+    // 아이템 트리거 안에 있는 경우 목표를 설정한다
     public void SetTargetPosition(Transform target)
     {
         targetPlayer = target;
@@ -122,6 +138,15 @@ public class Item : MonoBehaviourPun
         StartCoroutine(FlyTo(pos, rot, duration));
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: FlyTo
+    * 기능: 아이템을 목표 위치로 날리고 동기화하는 함수
+    * 입력:
+    *   - targetPosition: 아이템 목표의 위치
+    *   - targetRotation: 아이템 목표의 회전
+    *   - duration: 날라가는 시간
+    ***********************************************************************************/
     protected IEnumerator FlyTo(Vector3 targetPosition, Quaternion targetRotation, float duration)
     {
         float time = 0f;
@@ -143,6 +168,13 @@ public class Item : MonoBehaviourPun
         transform.rotation = targetRotation;
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: AutoUseAfterDelay
+    * 기능: 일정 시간 이후 아이템을 자동으로 사용하는 함수
+    * 입력:    
+    *   - delay: 아이템 자동 사용 딜레이
+    ***********************************************************************************/
     private IEnumerator AutoUseAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);

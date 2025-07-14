@@ -2,11 +2,12 @@ using Photon.Pun;
 using UnityEngine;
 using System.Collections;
 
+/* 아이템을 스폰하는 아이템 스포너 */
 public class ItemSpawner : MonoBehaviourPun
 {
-    [SerializeField] protected string spawnItemPrefabName = ""; 
-    [SerializeField] private Transform spawnPoint; // 아이템 생성 위치
-    [SerializeField] private float itemSpawnDelay = 5f;
+    [SerializeField] protected string spawnItemPrefabName = "";     // 생성할 아이템 프리팹
+    [SerializeField] private Transform spawnPoint;                  // 아이템 생성 위치
+    [SerializeField] private float itemSpawnDelay = 5f;             // 아이템 스폰 딜레이
 
     private GameObject currentItem;
     public GameObject CurrentItem
@@ -36,6 +37,11 @@ public class ItemSpawner : MonoBehaviourPun
         SpawnItem();
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: SpawnItem
+    * 기능: 아이템을 스폰하는 함수
+    ***********************************************************************************/
     private void SpawnItem()
     {
         if (currentItem != null) return;
@@ -52,6 +58,14 @@ public class ItemSpawner : MonoBehaviourPun
         StartCoroutine(WatchAndRespawn());
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: RPC_SetItemSpawner
+    * 기능: 스폰한 아이템의 부모를 아이템 스포너로 지정함
+    * 입력: 
+    *   - itemViewID: 스폰한 아이템의 뷰ID
+    *   - spawnerViewID: 스포너의 뷰ID
+    ***********************************************************************************/
     [PunRPC]
     private void RPC_SetItemSpawner(int itemViewID, int spawnerViewID)
     {
@@ -73,6 +87,11 @@ public class ItemSpawner : MonoBehaviourPun
         }
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: WatchAndRespawn
+    * 기능: 스폰한 아이템이 파괴되었는지 검사하고, 파괴되었으면 spawnDelay 만큼 대기 후 다사 아이템을 스폰함
+    ***********************************************************************************/
     private IEnumerator WatchAndRespawn()
     {
         while (currentItem != null)

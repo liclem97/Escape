@@ -1,32 +1,32 @@
 using Photon.Pun;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+/* 플레이어의 총기 함수 */
 public class Gun : MonoBehaviourPun
 {
     protected enum GunType { Pistol, Revolver, SniperRifle }
 
     [Header("Shoot Point")]
-    [SerializeField] protected Transform muzzlePoint;
-    [SerializeField] protected RayVisualizer rayVisualizer;
-    [SerializeField] protected LayerMask HitRayMask;
+    [SerializeField] protected Transform muzzlePoint;           // 머즐 위치
+    [SerializeField] protected RayVisualizer rayVisualizer;     // 레이 비쥬얼
+    [SerializeField] protected LayerMask HitRayMask;            // 히트 레이 마스크
 
     [Header("Gun Stats")]
-    [SerializeField] protected float gunDamage = 10f;
-    [SerializeField] protected float gunAttackDelay = 0.5f;
-    [SerializeField] protected int maxAmmo = 6;
-    [SerializeField] protected float attackRange = 100f;
+    [SerializeField] protected float gunDamage = 10f;           // 총 대미지
+    [SerializeField] protected float gunAttackDelay = 0.5f;     // 발사 지연 시간
+    [SerializeField] protected int maxAmmo = 6;                 // 탄창
+    [SerializeField] protected float attackRange = 100f;        // 공격 거리
 
     [Header("Gun Effect")]
     [SerializeField] protected GameObject muzzleFlashEffect;
     [SerializeField] protected GameObject environmentHitEffect;
     [SerializeField] protected GameObject livingHitEffect;
-    [SerializeField] protected AudioClip gunFireSound;   
+    [SerializeField] protected AudioClip gunFireSound;          // 각 이펙트 및 사운드
 
     [Header("UI")]
     [SerializeField] protected Text ammoText;
-    [SerializeField] protected Image attackCooldownImage;
+    [SerializeField] protected Image attackCooldownImage;       // 탄창 및 발사 지연 UI
 
     [Header("Camera Zoom")]
     [SerializeField] protected float zoomFOV = 30f;
@@ -34,12 +34,12 @@ public class Gun : MonoBehaviourPun
     [SerializeField] protected float zoomSpeed = 10f;
     [SerializeField] protected float zoomOffset = 0.2f; // 앞쪽으로 당기는 거리
 
-    protected Vector3 originalHeadLocalPos;
-    protected bool headOffsetApplied = false;
+    //protected Vector3 originalHeadLocalPos;             // 플레이어의 원래 Head Rig의 위치
+    //protected bool headOffsetApplied = false;
 
-    protected OVRCameraRig playerRig;
-    protected Camera eyeCamera;
-    protected bool isZooming = false;
+    //protected OVRCameraRig playerRig;
+    //protected Camera eyeCamera;
+    //protected bool isZooming = false;
 
     private AudioSource gunAudioSource;
     private Transform targetHand;
@@ -71,21 +71,33 @@ public class Gun : MonoBehaviourPun
         UpdateCooldownImage();
     }
 
-    public void SetTargetHandAndRig(Transform hand, OVRCameraRig rig)
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: SetTargetHand
+    * 기능: 총이 붙을 hand의 위치를 저장하는 함수
+    * 입력: 
+    *   - hand: 총이 붙는 위치    
+    ***********************************************************************************/
+    public void SetTargetHand(Transform hand)
     {
         targetHand = hand;
-        playerRig = rig;
+        //playerRig = rig;
 
-        if (playerRig != null)
+        //if (playerRig != null)
         {
-            eyeCamera = playerRig.centerEyeAnchor.GetComponent<Camera>();
-            if (eyeCamera != null)
-            {
-                originalHeadLocalPos = playerRig.centerEyeAnchor.localPosition;
-            }
+          //  eyeCamera = playerRig.centerEyeAnchor.GetComponent<Camera>();
+//            if (eyeCamera != null)
+  //          {
+    //            originalHeadLocalPos = playerRig.centerEyeAnchor.localPosition;
+      //      }
         }
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: GunInitialize
+    * 기능: 총기의 초기화 함수
+    ***********************************************************************************/
     protected void GunInitialize()
     {
         if (!photonView.IsMine) return;
@@ -122,12 +134,17 @@ public class Gun : MonoBehaviourPun
             muzzleEffect = muzzleFlashEffect.GetComponent<ParticleSystem>();
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: TryFire
+    * 기능: 총의 발사를 시도하는 함수
+    ***********************************************************************************/
     protected virtual void TryFire()
     {
         if (Time.time - lastAttackTime < gunAttackDelay)
             return;
 
-        if (gunType != GunType.Pistol && currentAmmo <= 0)
+        if (currentAmmo <= 0)
         {
             Debug.Log("Out of ammo!");
             return;
@@ -136,12 +153,14 @@ public class Gun : MonoBehaviourPun
         Fire();
         lastAttackTime = Time.time;
 
+        // 리볼버인 경우 탄창이 감소하고 탄창의 텍스트를 업데이트함
         if (gunType == GunType.Revolver)
         {
             currentAmmo--;
             UpdateAmmoText();
         }
 
+        // 공격 딜레이 UI를 갱신함
         if (attackCooldownImage != null)
         {
             attackCooldownImage.fillAmount = 0f;
@@ -156,15 +175,27 @@ public class Gun : MonoBehaviourPun
         }
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: SpawnBulletFX
+    * 기능: 총기 피격 효과를 출력하는 함수
+    * 입력: 
+    *   - position: 이펙트 스폰 위치
+    *   - normal: 이펙트 스폰 방향
+    *   - hitLayer: 이펙트 구분 레이어
+    ***********************************************************************************/
     protected void SpawnBulletFX(Vector3 position, Vector3 normal, int hitLayer)
     {
         GameObject effect = null;
 
+        // 히트 레이어가 좀비 또는 사람일 경우 피 이펙트 출력
         if (hitLayer == LayerMask.NameToLayer("Zombie") || hitLayer == LayerMask.NameToLayer("Human"))
             effect = livingHitEffect;
+        // 히트 레이어가 환경 또는 폭탄일 경우 스톤 이펙트 출력
         else if (hitLayer == LayerMask.NameToLayer("Environment") || hitLayer == LayerMask.NameToLayer("Bomb"))
             effect = environmentHitEffect;
 
+        // 이펙트 스폰 및 일정 시간 후 파괴
         if (effect != null)
         {
             GameObject instance = Instantiate(effect, position, Quaternion.LookRotation(normal));
@@ -172,8 +203,6 @@ public class Gun : MonoBehaviourPun
             if (ps != null) ps.Play();
             Destroy(instance, 2f);
         }
-
-        Debug.DrawRay(position, normal * -0.3f, Color.red, 1f);
     }
 
     protected void PlayGunFireSound()
@@ -184,7 +213,7 @@ public class Gun : MonoBehaviourPun
 
     public virtual void Reload()
     {
-        if (gunType == GunType.Pistol) return;
+        if (gunType != GunType.Revolver) return;
     }
 
     protected void UpdateAmmoText()

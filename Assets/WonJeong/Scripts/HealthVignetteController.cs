@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
+/* 플레이어의 체력에 따른 카메라의 Vignette를 조정하는 스크립트 */
+/* 이 외에 플레이어 카메라의 Fade도 조정함 */
 public class HealthVignetteController : MonoBehaviour
 {
     private Volume volume;

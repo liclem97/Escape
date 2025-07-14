@@ -1,6 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
+/* 플레이어의 체력을 관리하는 스크립트 */
 public class VRPlayerHealth : MonoBehaviourPun, IDamageable
 {
     [SerializeField] private float maxHealth = 100f;
@@ -18,6 +19,7 @@ public class VRPlayerHealth : MonoBehaviourPun, IDamageable
         currentHealth = maxHealth;
     }
 
+    // IDamageable 인터페이스 상속 함수
     public void TakeDamage(float amount, int instigatorID)
     {
         if (isInvincible) return;
@@ -32,6 +34,13 @@ public class VRPlayerHealth : MonoBehaviourPun, IDamageable
         }
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: RestoreHealth
+    * 기능: 체력을 회복시키는 함수
+    * 입력:
+    *   - amount: 회복시킬 체력의 양
+    ***********************************************************************************/
     public void RestoreHealth(float amount)
     {
         if (isInvincible || GameManager.Instance.IsGameOver) return;

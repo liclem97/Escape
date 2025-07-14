@@ -1,5 +1,6 @@
 using UnityEngine;
 
+/* 크로스헤어가 항상 일정 크기로 보이도록 하는 스크립트 */
 public class ReticleBillboard : MonoBehaviour
 {
     [SerializeField] private Camera targetCamera;       // 인스펙터에서 할당

@@ -1,18 +1,19 @@
 using Photon.Pun;
 using UnityEngine;
 
+/* 적 애니메이션에 따른 행동 함수 */
 public class EnemyAnimationEvent : MonoBehaviour
 {
     [Header("Colliders")]
-    [SerializeField] private BoxCollider attackCollider;
-    [SerializeField] private BoxCollider throwCollider1;
-    [SerializeField] private BoxCollider throwCollider2;
+    [SerializeField] private BoxCollider attackCollider;    // 일반 좀비의 공격 콜라이더
+    [SerializeField] private BoxCollider throwCollider1;    // 보스 좀비가 공격 시 활성화되는 공격 콜라이더1
+    [SerializeField] private BoxCollider throwCollider2;    // 보스 좀비가 공격 시 활성화되는 공격 콜라이더2
 
     [Header("Sounds")]
     [SerializeField] private AudioClip idleSound;
     [SerializeField] private AudioClip attackSound;
     [SerializeField] private AudioClip dieSound;
-    [SerializeField] private AudioClip hitSound;
+    [SerializeField] private AudioClip hitSound;            // 각 사운드 저장
 
     public void attackColliderOn()
     {
@@ -92,6 +93,12 @@ public class EnemyAnimationEvent : MonoBehaviour
         }
     }
 
+
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: OnBossDied
+    * 기능: 보스 사망 시 게임 매니저에서 OnGameClear 함수를 호출
+    ***********************************************************************************/
     public void OnBossDied()
     {
         if (GameManager.Instance != null)

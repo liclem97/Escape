@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: classic_torso.qc_skeleton|attack
-      takeName: classic_torso.qc_skeleton|attack
+      name: classic_torso.qc_skeleton|Idle01 (1)
+      takeName: classic_torso.qc_skeleton|Idle01
       internalID: 6894217480731167321
       firstFrame: 0
-      lastFrame: 24
+      lastFrame: 117
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

@@ -1,6 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 
+/* 일정 시간 이후 게임을 종료시키는 스크립트 */
 public class ExitGameTrigger : MonoBehaviourPun
 {
     [SerializeField] private float exitDelay = 10f; // 종료까지 대기 시간 (초)

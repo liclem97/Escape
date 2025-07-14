@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
+/* 카메라 셰이크 스크립트 */
+/* 미사용 */
 public class CameraShake : MonoBehaviour
 {
     public IEnumerator Shake(float duration, float magnitude)

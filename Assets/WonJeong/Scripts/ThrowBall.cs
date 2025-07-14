@@ -2,11 +2,12 @@ using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
+/* 보스가 던지느 공(폭탄)의 스크립트 */
 public class ThrowBall : MonoBehaviourPun
 {
     [Header("Ball Stats")]
     [SerializeField] private float growDuration = 1.0f; // 커지는 데 걸리는 시간
-    [SerializeField] private float ballRange = 2f;
+    [SerializeField] private float ballRange = 2f;      // 공격 범위
 
     [Header("FX")]
     [SerializeField] private GameObject explosionEffect;
@@ -34,6 +35,11 @@ public class ThrowBall : MonoBehaviourPun
         }
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: CoGrow
+    * 기능: 공의 크기를 키우는 함수
+    ***********************************************************************************/
     private IEnumerator CoGrow()
     {
         float elapsed = 0f;
@@ -48,10 +54,15 @@ public class ThrowBall : MonoBehaviourPun
         }
 
         transform.localScale = targetScale;
-
-        //yield return new WaitForSeconds(2f);
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: ThrowToTarget
+    * 기능: 타겟에게 공을 던지는 함수
+    * 입력:
+    *   - targetPosition: 타겟의 위치
+    ***********************************************************************************/
     [PunRPC]
     public void ThrowToTarget(Vector3 targetPosition)
     {
@@ -72,6 +83,11 @@ public class ThrowBall : MonoBehaviourPun
         photonView.RPC(nameof(RPC_Explode), RpcTarget.AllBuffered);
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: RPC_Explode
+    * 기능: 공의 폭발을 동기화하는 함수    
+    ***********************************************************************************/
     [PunRPC]
     private void RPC_Explode()
     {
@@ -111,6 +127,11 @@ public class ThrowBall : MonoBehaviourPun
             PhotonNetwork.Destroy(gameObject);
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: PlayExplosionEffect
+    * 기능: 모든 클라이언트에서 폭발 이펙트와 소리를 재생함  
+    ***********************************************************************************/
     [PunRPC]
     private void SpawnExplodeFX()
     {
@@ -128,6 +149,7 @@ public class ThrowBall : MonoBehaviourPun
         }
     }
 
+    // 플레이어가 폭발 반경에 들어오면 폭발시킴
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<VRPlayer>())

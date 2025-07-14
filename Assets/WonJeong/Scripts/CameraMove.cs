@@ -2,12 +2,13 @@ using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
+/*  플레이어1과 플레이어2를 다음 지점으로 이동시키는 스크립트    */
 public class CameraMove : MonoBehaviourPun
 {
     public static CameraMove Instance { get; private set; }
     public enum PlayerType { Player1, Player2 }
 
-    [SerializeField] private GameObject vehicle;
+    [SerializeField] private GameObject vehicle;    // 플레이어2가 타고다니는 헬리콥터
 
     public GameObject Vehicle
     {
@@ -27,17 +28,25 @@ public class CameraMove : MonoBehaviourPun
         Instance = this;
     }
 
+    /***********************************************************************************
+    * 작성자: 박원정
+    * 함수: MoveToPosition
+    * 기능: 플레이어를 다음 포인트로 서서히 이동시킴
+    ***********************************************************************************/
     public IEnumerator MoveToPosition(GameObject player, Transform movePoint, float moveTime)
-    {
+    {   
+        // 시작 지점
         Vector3 startPos = player.transform.position;
         Quaternion startRot = player.transform.rotation;
 
+        // 도착 지점
         Vector3 targetPos = movePoint.position;
         Quaternion targetRot = movePoint.rotation;
 
         float elapsed = 0f;
         float duration = moveTime;
 
+        // lerp로 서서히 이동
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
