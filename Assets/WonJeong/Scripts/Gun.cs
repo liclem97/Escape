@@ -28,19 +28,6 @@ public class Gun : MonoBehaviourPun
     [SerializeField] protected Text ammoText;
     [SerializeField] protected Image attackCooldownImage;       // 탄창 및 발사 지연 UI
 
-    [Header("Camera Zoom")]
-    [SerializeField] protected float zoomFOV = 30f;
-    [SerializeField] protected float normalFOV = 60f;
-    [SerializeField] protected float zoomSpeed = 10f;
-    [SerializeField] protected float zoomOffset = 0.2f; // 앞쪽으로 당기는 거리
-
-    //protected Vector3 originalHeadLocalPos;             // 플레이어의 원래 Head Rig의 위치
-    //protected bool headOffsetApplied = false;
-
-    //protected OVRCameraRig playerRig;
-    //protected Camera eyeCamera;
-    //protected bool isZooming = false;
-
     private AudioSource gunAudioSource;
     private Transform targetHand;
 
@@ -57,11 +44,11 @@ public class Gun : MonoBehaviourPun
     protected virtual void Update()
     {
         if (!photonView.IsMine) return;
-        if (targetHand != null)
-        {
-            transform.position = targetHand.position;
-            transform.rotation = targetHand.rotation;
-        }
+        //if (targetHand != null)
+        //{
+        //    transform.position = targetHand.position;
+        //    transform.rotation = targetHand.rotation;
+        //}
 
         if (ARAVRInput.GetDown(ARAVRInput.Button.IndexTrigger, ARAVRInput.Controller.RTouch))
         {            
@@ -81,16 +68,9 @@ public class Gun : MonoBehaviourPun
     public void SetTargetHand(Transform hand)
     {
         targetHand = hand;
-        //playerRig = rig;
-
-        //if (playerRig != null)
-        {
-          //  eyeCamera = playerRig.centerEyeAnchor.GetComponent<Camera>();
-//            if (eyeCamera != null)
-  //          {
-    //            originalHeadLocalPos = playerRig.centerEyeAnchor.localPosition;
-      //      }
-        }
+        transform.SetParent(targetHand);  // 부모로 설정
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
     }
 
     /***********************************************************************************
@@ -144,7 +124,7 @@ public class Gun : MonoBehaviourPun
         if (Time.time - lastAttackTime < gunAttackDelay)
             return;
 
-        if (currentAmmo <= 0)
+        if (gunType == GunType.Revolver && currentAmmo <= 0)
         {
             Debug.Log("Out of ammo!");
             return;

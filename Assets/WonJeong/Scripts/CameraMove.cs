@@ -34,7 +34,13 @@ public class CameraMove : MonoBehaviourPun
     * 기능: 플레이어를 다음 포인트로 서서히 이동시킴
     ***********************************************************************************/
     public IEnumerator MoveToPosition(GameObject player, Transform movePoint, float moveTime)
-    {   
+    {
+        // 이동 전 모든 RayVisualizer 비활성화
+        RayVisualizer[] rayVisualizers = player.GetComponentsInChildren<RayVisualizer>();
+        foreach (var ray in rayVisualizers)
+        {
+            ray.Off();
+        }
         // 시작 지점
         Vector3 startPos = player.transform.position;
         Quaternion startRot = player.transform.rotation;
@@ -60,5 +66,11 @@ public class CameraMove : MonoBehaviourPun
 
         player.transform.position = targetPos;
         player.transform.rotation = targetRot;
+
+        //이동이 끝난 후 RayVisualizer 다시 활성화
+        foreach (var ray in rayVisualizers)
+        {
+            ray.On();
+        }
     }
 }

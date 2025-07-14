@@ -113,7 +113,7 @@ public class EnemyThrower : EnemyBase
     {
         if (target != null && gameObject)
         {
-            Vector3 targetPos = target.position + Vector3.up * 1.2f; // 타깃의 약간 위쪽을 조준
+            Vector3 targetPos = target.position + Vector3.up * 0.9f;
             ball.GetComponent<ThrowBall>().photonView.RPC("ThrowToTarget", RpcTarget.All, targetPos);
         }        
     }

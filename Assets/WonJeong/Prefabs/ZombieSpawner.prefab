@@ -47,8 +47,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalZombiePrefabName: Zombie
   fatZombiePrefabName: FatZombie
-  spawnTimeMin: 1
-  spawnTimeMax: 3
+  crawlZombiePrefabName: Crawl_Zombie
+  spawnTimeMin: 3
+  spawnTimeMax: 10
   maxZombie: 5
   minZombie: 2
 --- !u!114 &490907388294993159

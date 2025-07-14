@@ -9,7 +9,7 @@ public class ZombieSpawner : MonoBehaviourPun
     [Header("Zombies to spawn")]
     [SerializeField] private string normalZombiePrefabName = "Zombie";
     [SerializeField] private string fatZombiePrefabName = "FatZombie";
-    [SerializeField] private string crawlZombiePrefabName = "CrawlZombie";
+    [SerializeField] private string crawlZombiePrefabName = "Crawl_Zombie";
 
     [Header("Spawn time")]
     [SerializeField] private float spawnTimeMin = 1f;   

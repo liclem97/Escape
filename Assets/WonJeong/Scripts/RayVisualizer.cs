@@ -23,6 +23,10 @@ public class RayVisualizer : MonoBehaviour
     {
         // 루트에 있는 PhotonView 찾기
         rootPhotonView = GetComponentInParent<PhotonView>();
+        if (muzzlePoint)
+        {
+            transform.SetParent(muzzlePoint);
+        }
         if (rootPhotonView != null && rootPhotonView.IsMine)
         {
             ReticlePoint.SetActive(true); // 내 것만 보이게            
@@ -54,7 +58,7 @@ public class RayVisualizer : MonoBehaviour
     private IEnumerator Process()
     {
         while (true)
-        {
+        {   
             // LineTrace: 시작 위치, 방향, HitResult, 거리, Layer
             if (Physics.Raycast(muzzlePoint.position, muzzlePoint.forward, out RaycastHit HitInfo, Distance, HitRayMask))
             {

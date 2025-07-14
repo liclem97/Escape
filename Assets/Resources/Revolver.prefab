@@ -96,10 +96,6 @@ MonoBehaviour:
   gunFireSound: {fileID: 8300000, guid: fc56672d072fb0a4182df25a68fb7369, type: 3}
   ammoText: {fileID: 5624538112133726185}
   attackCooldownImage: {fileID: 8701413744333324427}
-  zoomFOV: 30
-  normalFOV: 60
-  zoomSpeed: 10
-  zoomOffset: 0.2
 --- !u!82 &4259188243431709261
 AudioSource:
   m_ObjectHideFlags: 0
@@ -662,7 +658,7 @@ PrefabInstance:
       objectReference: {fileID: 5310139647055161556}
     - target: {fileID: 2369246976620967767, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: HitRayMask.m_Bits
-      value: 9088
+      value: 74624
       objectReference: {fileID: 0}
     - target: {fileID: 2472708392277176286, guid: 3d828b25306b0d64f8a13a0c94df0a00, type: 3}
       propertyPath: m_UseWorldSpace
