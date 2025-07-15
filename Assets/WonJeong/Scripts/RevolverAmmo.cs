@@ -40,6 +40,10 @@ public class RevolverAmmo : Item
             revolver.Reload();
             photonView.RPC(nameof(UseItem), RpcTarget.AllBuffered);
         }
+        else
+        {
+            return;
+        }
     }
 
     private void OnDrawGizmos()
